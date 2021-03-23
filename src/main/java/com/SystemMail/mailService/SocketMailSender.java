@@ -1,5 +1,6 @@
 package com.SystemMail.mailService;
 
+import com.SystemMail.dns.DNSLookup;
 import com.SystemMail.exception.SMTPException;
 
 import java.io.BufferedReader;
@@ -32,13 +33,13 @@ public class SocketMailSender {
         if (!line.startsWith("250")) throw new Exception("HELO 실패했습니다:"+line);
 
         System.out.println("MAIL FROM 명령을 전송합니다.");
-        pw.println("MAIL FROM:"+sender);
+        pw.println("MAIL FROM: "+sender);
         line=br.readLine();
         System.out.println("응답:"+line);
         if (!line.startsWith("250")) throw new Exception("MAIL FROM 에서 실패했습니다:"+line);
 
         System.out.println("RCPT 명령을 전송합니다.");
-        pw.println("RCPT TO:"+recipient);
+        pw.println("RCPT TO: "+recipient);
         line=br.readLine();
         System.out.println("응답:"+line);
         if (!line.startsWith("250")) throw new Exception("RCPT TO 에서 실패했습니다:"+line);
@@ -78,11 +79,13 @@ public class SocketMailSender {
     }
 
     public static void main(String args[]) {
+        DNSLookup dnsLookup = new DNSLookup();
+        String mx = dnsLookup.lookup("gmail.com");
         try {
             SocketMailSender.sendMail(
-                    "mx1.naver.com",
-                    "pdj13579@nat.com",
-                    "recipient e-mail",
+                    mx,
+                    "<pdj13579@nate.com>",
+                    "<pdj13579@gmail.com>",
                     "내용"
             );
             System.out.println("==========================");
