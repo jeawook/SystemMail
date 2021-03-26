@@ -1,5 +1,6 @@
 package com.SystemMail.domain;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
 
@@ -11,6 +12,7 @@ import java.util.List;
 @Entity
 @Builder
 @NoArgsConstructor
+@AllArgsConstructor
 public class SendInfo {
 
     @Id @GeneratedValue
@@ -23,16 +25,22 @@ public class SendInfo {
 
     private LocalDateTime completeDate;
 
-    private Group group;
+    @OneToOne
+    @JoinColumn(name = "group_id")
+    private MailGroup group;
 
+    @OneToOne
+    @JoinColumn(name = "template_id")
     private Template template;
 
+    @OneToOne
+    @JoinColumn(name = "mail_info_id")
     private MailInfo mailInfo;
 
     @OneToOne
     private ResultInfo resultInfo;
 
-    @OneToMany
+    @OneToMany(mappedBy = "sendInfo")
     private List<ResultDetails> resultDetails = new ArrayList<>();
 
 

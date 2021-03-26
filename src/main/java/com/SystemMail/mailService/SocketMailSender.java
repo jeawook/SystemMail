@@ -1,102 +1,123 @@
 package com.SystemMail.mailService;
 
 import com.SystemMail.dns.DNSLookup;
+import com.SystemMail.domain.MailDTO;
 import com.SystemMail.exception.SMTPException;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.io.PrintStream;
-import java.io.PrintWriter;
-import java.net.Socket;
+import java.io.*;
+import java.net.*;
+import java.nio.charset.StandardCharsets;
+import java.text.*;
+import java.time.LocalDateTime;
+import java.util.*;
 
+public class SocketMailSender{
 
-
-public class SocketMailSender {
+    private Socket smtp ;//SMTP 서버에 접속하기 위한것
     private BufferedReader input;
     private PrintStream output;
+    private String serverReply;
+    static private final String serverDomain = "sender.com";
+    static private final int PORT = 25;
 
-    public static void sendMail(String smtpServer, String sender, String recipient, String content)
-            throws Exception {
-        Socket socket=new Socket(smtpServer, 25);
-        BufferedReader br=new BufferedReader(new InputStreamReader( socket.getInputStream() ) );
-        PrintWriter pw=new PrintWriter( socket.getOutputStream(), true );
-        System.out.println("서버에 연결되었습니다.");
-
-        String line=br.readLine();
-        System.out.println("응답:"+line);
-        if (!line.startsWith("220")) throw new Exception("SMTP서버가 아닙니다:"+line);
-
-        System.out.println("HELO 명령을 전송합니다.");
-        pw.println("HELO mydomain.name");
-        line=br.readLine();
-        System.out.println("응답:"+line);
-        if (!line.startsWith("250")) throw new Exception("HELO 실패했습니다:"+line);
-
-        System.out.println("MAIL FROM 명령을 전송합니다.");
-        pw.println("MAIL FROM: "+sender);
-        line=br.readLine();
-        System.out.println("응답:"+line);
-        if (!line.startsWith("250")) throw new Exception("MAIL FROM 에서 실패했습니다:"+line);
-
-        System.out.println("RCPT 명령을 전송합니다.");
-        pw.println("RCPT TO: "+recipient);
-        line=br.readLine();
-        System.out.println("응답:"+line);
-        if (!line.startsWith("250")) throw new Exception("RCPT TO 에서 실패했습니다:"+line);
-
-        System.out.println("DATA 명령을 전송합니다.");
-        pw.println("DATA");
-        line=br.readLine();
-        System.out.println("응답:"+line);
-        if (!line.startsWith("354")) throw new Exception("DATA 에서 실패했습니다:"+line);
-
-        System.out.println("본문을 전송합니다.");
-        pw.println(content);
-        pw.println(".");
-        line=br.readLine();
-        System.out.println("응답:"+line);
-        if (!line.startsWith("250")) throw new Exception("내용전송에서 실패했습니다:"+line);
-
-        System.out.println("접속 종료합니다.");
-        pw.println("quit");
-
-        br.close();
-        pw.close();
-        socket.close();
+    public static void main(String[] args) throws Exception{
+        String content = "<html><head><meta name=\"GENERATOR\" content=\"MSHTML 9.00.8112.16737\"></head><body>한글깨짐?\n" +
+                "</body></html>";
+        MailDTO mailDTO = MailDTO.builder()
+                .mailFrom("pdj13579@nate.com")
+                .mailTo("pdj13579@nate.com")
+                .content(content)
+                .encoding("8bit")
+                .subject("메일 제목")
+                .domain("nate.com")
+                .build();
+        DNSLookup dnsLookup = new DNSLookup();
+        String lookup = dnsLookup.lookup(mailDTO.getDomain());
+        SocketMailSender mail = new SocketMailSender();
+        mail.send(mailDTO,lookup);
 
     }
 
-    private boolean submitCommand(String command) throws SMTPException {
-        try {
-            output.print(command + "\r\n");
-            String serverReply = input.readLine();
-            if (serverReply.charAt(0) == '4' || serverReply.charAt(0) == '5')//전송실패등..
+    public void send(MailDTO mailDTO, String lookup) throws SMTPException{
+        connect(lookup);
+        hail(mailDTO.getMailFrom(), mailDTO.getMailTo());
+        sendMessage(mailDTO);
+        logout();
+    }
+
+    public void connect(String lookup) throws SMTPException{
+        try{
+            smtp = new Socket(lookup, PORT);
+            input = new BufferedReader(new InputStreamReader(smtp.getInputStream()));
+            output = new PrintStream(smtp.getOutputStream());
+            serverReply = input.readLine();
+            if(serverReply.startsWith("250") || serverReply.startsWith("354")|| serverReply.startsWith("221")){
+            }else{
+                throw new SMTPException("Error connecting to SMTP server " + lookup+" on port"+PORT);
+            }
+        }catch(Exception e){
+            throw new SMTPException(e.getMessage());
+        }
+
+    }
+
+    public void hail(String from, String to) throws SMTPException{
+        if(submitCommand("HELO " + serverDomain))
+            throw new SMTPException("Error occured during HELO command.");
+        if(submitCommand("MAIL FROM:"+from))
+            throw new SMTPException("Error during MAIL command");
+        if(submitCommand("RCPT TO:"+to))
+            throw new SMTPException("Error during RCPT command.");
+    }
+
+    public void sendMessage(MailDTO mailDTO) throws SMTPException{
+        StringBuilder sb = new StringBuilder();
+        try{
+            if(submitCommand("DATA"))
+                throw new SMTPException("Error during DATA command.");
+            String subject = MailHeader.create(MailHeader.HEADER_SUBJECT, MailHeader.encodeHeader(mailDTO.getSubject(),"utf-8"));
+            sb.append(subject);
+            sb.append("From:<").append(mailDTO.getMailFrom()).append(">").append("\r\n");
+            sb.append("To:<").append(mailDTO.getMailTo()).append(">").append("\r\n");
+            sb.append("Reply-To:<").append(mailDTO.getReplyTo()).append(">").append("\r\n");
+            sb.append("Date:").append(LocalDateTime.now()).append("\r\n");
+            sb.append("Mime-Version: 1.0;").append("\r\n");
+            sb.append("Content-Type: text/html; charset=\"utf-8\";").append("\r\n");
+            sb.append("Content-Transfer-Encoding :").append(mailDTO.getEncoding()).append("\r\n");
+
+
+
+            sb.append("\r\n");
+            if(submitCommand(sb.toString()+mailDTO.getContent()+"\r\n."))
+                throw new SMTPException("Error during mail transmission.");
+
+        }catch(Exception e){
+        }
+    }
+
+
+    private boolean submitCommand(String command) throws SMTPException{
+        try{
+            output.print(command+"\r\n");
+            System.out.println("send : "+command);
+            serverReply = input.readLine();
+            System.out.println("return : "+serverReply);
+            if(serverReply.charAt(0)=='4'||serverReply.charAt(0)=='5')//전송실패등..
                 return true;
             else return false;
-        } catch (Exception e) {
+        }catch(Exception e){
             throw new SMTPException(e.getMessage());
         }
     }
 
-    public static void main(String args[]) {
-        DNSLookup dnsLookup = new DNSLookup();
-        String mx = dnsLookup.lookup("gmail.com");
-        try {
-            SocketMailSender.sendMail(
-                    mx,
-                    "<pdj13579@nate.com>",
-                    "<pdj13579@gmail.com>",
-                    "내용"
-            );
-            System.out.println("==========================");
-            System.out.println("메일이 전송되었습니다.");
-        } catch(Exception e) {
-            System.out.println("==========================");
-            System.out.println("메일이 발송되지 않았습니다.");
-            System.out.println(e.toString());
-        }
+    public void logout() throws SMTPException {
+        try{
+            if(submitCommand("Quit"))
+                throw new SMTPException("Error during QUIT command");
+            input.close();
+            output.flush();
+            output.close();
+            smtp.close();
+        }catch(Exception e){}
     }
-
-
-
 }

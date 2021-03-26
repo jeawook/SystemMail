@@ -13,15 +13,11 @@ import java.util.Hashtable;
 public class DNSLookup
 {
     private InitialDirContext iDirC;
-
+    private final static String record = "MX";
     public DNSLookup ()
     {
         Hashtable<String, String> env = new Hashtable<String, String>();
-        //env.put(Context.INITIAL_CONTEXT_FACTORY,"com.sun.jndi.ldap.LdapCtxFactory");
-        //env.put(Context.PROVIDER_URL, "ldap://localhost:389/o=JNDITutorial");
         env.put(Context.INITIAL_CONTEXT_FACTORY,"com.sun.jndi.dns.DnsContextFactory");
-        //env.put(Context.PROVIDER_URL, "dns://google.com");
-        // get the default initial Directory Context
         try {
             iDirC = new InitialDirContext(env);
         } catch (NamingException e) {
@@ -30,7 +26,7 @@ public class DNSLookup
         }
     }
 
-    private void lookup (String host, String record)
+    public String lookup (String host)
     {
         InetAddress inetAddress;
         try {
@@ -52,6 +48,7 @@ public class DNSLookup
             for (int i=0; i<mxRecord.size();i++) {
                 System.out.println(mxRecord.get(i));
             }
+            return mxRecord.get(0).toString().split(" ")[1];
 
         } catch (UnknownHostException e) {
             // TODO Auto-generated catch block
@@ -60,10 +57,11 @@ public class DNSLookup
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
+        return null;
     }
 
     public static void main(String[] args){
         DNSLookup looker = new DNSLookup();
-        looker.lookup("gmail.com", "MX");
+        looker.lookup("gmail.com");
     }
 }

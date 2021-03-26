@@ -12,6 +12,7 @@ import javax.persistence.Id;
 @Entity
 @Builder
 @NoArgsConstructor
+@AllArgsConstructor
 public class MailInfo {
 
     @Id @GeneratedValue
@@ -21,5 +22,10 @@ public class MailInfo {
     private String mailFrom;
     private String mailTo;
     private String replyTo;
+
+    private String header;
+
+    private String content;
+
 
 }

@@ -1,5 +1,6 @@
 package com.SystemMail.domain;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
 
@@ -11,6 +12,7 @@ import javax.persistence.Id;
 @Entity
 @Builder
 @NoArgsConstructor
+@AllArgsConstructor
 public class Template {
 
     @Id @GeneratedValue

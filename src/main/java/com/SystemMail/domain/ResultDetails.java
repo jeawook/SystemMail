@@ -1,5 +1,6 @@
 package com.SystemMail.domain;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
 
@@ -8,6 +9,7 @@ import javax.persistence.*;
 @Entity
 @Builder
 @NoArgsConstructor
+@AllArgsConstructor
 public class ResultDetails {
 
     @Id @GeneratedValue
@@ -20,7 +22,8 @@ public class ResultDetails {
 
     private String message;
 
-    @OneToMany
+    @ManyToOne
+    @JoinColumn(name = "send_info_id")
     private SendInfo sendInfo;
 
 }
