@@ -3,6 +3,7 @@ package com.SystemMail.mailService;
 import com.SystemMail.dns.DNSLookup;
 import com.SystemMail.domain.MailDTO;
 import com.SystemMail.exception.SMTPException;
+import org.springframework.stereotype.Component;
 
 import java.io.*;
 import java.net.*;
@@ -23,6 +24,8 @@ public class SocketMailSender{
     public static void main(String[] args) throws Exception{
         String content = "<html><head><meta name=\"GENERATOR\" content=\"MSHTML 9.00.8112.16737\"></head><body>한글깨짐?\n" +
                 "</body></html>";
+
+
         MailDTO mailDTO = MailDTO.builder()
                 .mailFrom("pdj13579@nate.com")
                 .mailTo("pdj13579@nate.com")
@@ -52,6 +55,7 @@ public class SocketMailSender{
             output = new PrintStream(smtp.getOutputStream());
             serverReply = input.readLine();
             if(serverReply.startsWith("250") || serverReply.startsWith("354")|| serverReply.startsWith("221")){
+
             }else{
                 throw new SMTPException("Error connecting to SMTP server " + lookup+" on port"+PORT);
             }
