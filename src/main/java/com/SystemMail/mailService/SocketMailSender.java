@@ -3,18 +3,14 @@ package com.SystemMail.mailService;
 import com.SystemMail.dns.DNSLookup;
 import com.SystemMail.domain.MailDTO;
 import com.SystemMail.exception.SMTPException;
-import org.springframework.stereotype.Component;
 
 import java.io.*;
 import java.net.*;
-import java.nio.charset.StandardCharsets;
-import java.text.*;
 import java.time.LocalDateTime;
-import java.util.*;
 
 public class SocketMailSender{
 
-    private Socket smtp ;//SMTP 서버에 접속하기 위한것
+    private Socket smtp;
     private BufferedReader input;
     private PrintStream output;
     private String serverReply;
@@ -41,13 +37,25 @@ public class SocketMailSender{
 
     }
 
+    /**
+     * 메일 발송 정보 입력
+     * @param mailDTO 메일 발송 정보
+     * @param lookup 수신 서버 정보
+     * @throws SMTPException
+     */
+
     public void send(MailDTO mailDTO, String lookup) throws SMTPException{
         connect(lookup);
         hail(mailDTO.getMailFrom(), mailDTO.getMailTo());
         sendMessage(mailDTO);
-        logout();
+        quit();
     }
 
+    /**
+     * smtp 수신 서버 연결
+     * @param lookup 수신 서버 정보
+     * @throws SMTPException
+     */
     public void connect(String lookup) throws SMTPException{
         try{
             smtp = new Socket(lookup, PORT);
@@ -74,6 +82,12 @@ public class SocketMailSender{
             throw new SMTPException("Error during RCPT command.");
     }
 
+    /**
+     * 메일 발송
+     * @param mailDTO
+     * @throws SMTPException
+     */
+
     public void sendMessage(MailDTO mailDTO) throws SMTPException{
         StringBuilder sb = new StringBuilder();
         try{
@@ -99,14 +113,17 @@ public class SocketMailSender{
         }
     }
 
-
+    /**
+     * smtp 명령어 실행
+     * @param command
+     * @return
+     * @throws SMTPException
+     */
     private boolean submitCommand(String command) throws SMTPException{
         try{
             output.print(command+"\r\n");
-            System.out.println("send : "+command);
             serverReply = input.readLine();
-            System.out.println("return : "+serverReply);
-            if(serverReply.charAt(0)=='4'||serverReply.charAt(0)=='5')//전송실패등..
+            if(serverReply.charAt(0)=='4'||serverReply.charAt(0)=='5')
                 return true;
             else return false;
         }catch(Exception e){
@@ -114,7 +131,11 @@ public class SocketMailSender{
         }
     }
 
-    public void logout() throws SMTPException {
+    /**
+     * smtp 통신 종료
+     * @throws SMTPException
+     */
+    public void quit() throws SMTPException {
         try{
             if(submitCommand("Quit"))
                 throw new SMTPException("Error during QUIT command");
