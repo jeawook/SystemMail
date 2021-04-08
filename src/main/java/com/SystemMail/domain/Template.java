@@ -1,16 +1,15 @@
 package com.SystemMail.domain;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Builder
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class Template {
@@ -24,4 +23,7 @@ public class Template {
     private String user;
 
     private String subject;
+
+    @OneToMany(mappedBy = "template")
+    private List<MailInfo> mailInfoList = new ArrayList<>();
 }
