@@ -47,7 +47,6 @@ public class SendInfo {
 
     @Builder
     public SendInfo(@NonNull LocalDateTime sendDate, MailGroup group, Template template, MailInfo mailInfo) {
-
         this.sendDate = sendDate;
         this.group = group;
         this.template = template;
