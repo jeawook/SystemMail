@@ -1,8 +1,6 @@
 package com.SystemMail.mailService;
 
-import com.SystemMail.domain.HeaderDto;
-import com.SystemMail.domain.MailInfo;
-import org.springframework.stereotype.Service;
+import com.SystemMail.entity.MailInfo;
 
 public class MailService {
 

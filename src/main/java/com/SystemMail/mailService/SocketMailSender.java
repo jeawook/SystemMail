@@ -1,7 +1,7 @@
 package com.SystemMail.mailService;
 
 import com.SystemMail.dns.DNSLookup;
-import com.SystemMail.domain.MailDTO;
+import com.SystemMail.dto.MailDTO;
 import com.SystemMail.exception.SMTPException;
 
 import java.io.*;

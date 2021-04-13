@@ -1,4 +1,4 @@
-package com.SystemMail.domain;
+package com.SystemMail.entity;
 
 import lombok.*;
 
@@ -13,7 +13,7 @@ import javax.persistence.*;
 public class ResultDetail {
 
     @Id @GeneratedValue
-    @Column(name = "result_details_id")
+    @Column(name = "id")
     private Long id;
 
     private String email;

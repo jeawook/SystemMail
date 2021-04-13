@@ -1,4 +1,4 @@
-package com.SystemMail.domain;
+package com.SystemMail.entity;
 
 import lombok.*;
 
@@ -16,12 +16,18 @@ import static javax.persistence.FetchType.*;
 public class MailInfo {
 
     @Id @GeneratedValue
-    @Column(name = "mail_info_id")
+    @Column(name = "id")
     private Long id;
 
-    private String mailFrom;
-    private String mailTo;
-    private String replyTo;
+    @Embedded
+    @AttributeOverride(name = "email", column = @Column(name = "mailFrom"))
+    private Email mailFrom;
+    @Embedded
+    @AttributeOverride(name = "email", column = @Column(name = "mailTo"))
+    private Email mailTo;
+    @Embedded
+    @AttributeOverride(name = "email", column = @Column(name = "replyTo"))
+    private Email replyTo;
     private String header;
 
     @OneToMany(mappedBy = "mailInfo", cascade = ALL, fetch = LAZY)
@@ -29,17 +35,16 @@ public class MailInfo {
 
     @ManyToOne
     @JoinColumn(name = "template_id")
-    private Template template;
+    private MailTemplate mailTemplate;
 
     @Builder
-    public MailInfo(Long id, String mailFrom, String mailTo, String replyTo, String header, List<SendInfo> sendInfoList, Template template) {
-        this.id = id;
+    public MailInfo(Email mailFrom, Email mailTo, Email replyTo, String header, List<SendInfo> sendInfoList, MailTemplate mailTemplate) {
         this.mailFrom = mailFrom;
         this.mailTo = mailTo;
         this.replyTo = replyTo;
         this.header = header;
         this.sendInfoList = sendInfoList;
-        this.template = template;
+        this.mailTemplate = mailTemplate;
     }
 
     public void addSendInfo(SendInfo sendInfo) {

@@ -1,4 +1,4 @@
-package com.SystemMail.domain;
+package com.SystemMail.dto;
 
 import lombok.Builder;
 import lombok.Data;
@@ -18,6 +18,4 @@ public class HeaderDto {
     private String subject;
 
     private String DKIM;
-
-
 }
