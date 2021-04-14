@@ -1,6 +1,8 @@
 package com.SystemMail.entity;
 
 import lombok.*;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -9,11 +11,10 @@ import java.util.List;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
+
 @Entity
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
+@Getter @Setter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class MailTemplate extends BaseTimeEntity {
 
     @Id @GeneratedValue
@@ -28,7 +29,7 @@ public class MailTemplate extends BaseTimeEntity {
 
     private String message;
 
-    @OneToMany(mappedBy = "template")
+    @OneToMany(mappedBy = "mailTemplate")
     private List<MailInfo> mailInfoList = new ArrayList<>();
 
     @Builder
@@ -40,5 +41,16 @@ public class MailTemplate extends BaseTimeEntity {
         this.user = user;
         this.subject = subject;
         this.message = message;
+    }
+
+    @Override
+    public String toString() {
+        return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
+                .append("id", id)
+                .append("content", content)
+                .append("user", user)
+                .append("subject", subject)
+                .append("message", message)
+                .toString();
     }
 }

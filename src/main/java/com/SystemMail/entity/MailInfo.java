@@ -10,7 +10,6 @@ import static javax.persistence.CascadeType.*;
 import static javax.persistence.FetchType.*;
 
 @Entity
-@Builder
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class MailInfo {
@@ -20,13 +19,13 @@ public class MailInfo {
     private Long id;
 
     @Embedded
-    @AttributeOverride(name = "email", column = @Column(name = "mailFrom"))
+    @AttributeOverride(name = "address", column = @Column(name = "mailFrom"))
     private Email mailFrom;
     @Embedded
-    @AttributeOverride(name = "email", column = @Column(name = "mailTo"))
+    @AttributeOverride(name = "address", column = @Column(name = "mailTo"))
     private Email mailTo;
     @Embedded
-    @AttributeOverride(name = "email", column = @Column(name = "replyTo"))
+    @AttributeOverride(name = "address", column = @Column(name = "replyTo"))
     private Email replyTo;
     private String header;
 
@@ -50,5 +49,10 @@ public class MailInfo {
     public void addSendInfo(SendInfo sendInfo) {
         sendInfo.setMailInfo(this);
         getSendInfoList().add(sendInfo);
+    }
+
+    public void addMailTemplate(MailTemplate mailTemplate) {
+        mailTemplate.getMailInfoList().add(this);
+        this.mailTemplate = mailTemplate;
     }
 }

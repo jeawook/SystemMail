@@ -1,6 +1,7 @@
 package com.SystemMail.controller;
 
 import com.SystemMail.Service.TemplateService;
+import com.SystemMail.common.ResponseMessage;
 import com.SystemMail.dto.TemplateDto;
 import com.SystemMail.entity.MailTemplate;
 import com.SystemMail.reousrce.MailTemplateResource;
@@ -29,15 +30,7 @@ public class TemplateController {
         MailTemplate createdMailTemplate = templateService.createTemplate(mailTemplate);
         WebMvcLinkBuilder selfLinkBuilder = linkTo(TemplateController.class).slash(createdMailTemplate.getId());
         URI createUri = selfLinkBuilder.toUri();
-        MailTemplateResource templateResource = new MailTemplateResource(createdMailTemplate);
-        templateResource.add(linkTo(TemplateController.class).withRel("create-template"));
-        templateResource.add(selfLinkBuilder.withRel("update-template"));
-        return ResponseEntity.created(createUri).body(templateResource);
-
-    }
-
-    @GetMapping("/api/template/{id}")
-    public ResponseEntity findTemplate(@PathVariable Long id) {
+        return ResponseEntity.created(createUri).body(createdMailTemplate);
 
     }
 
