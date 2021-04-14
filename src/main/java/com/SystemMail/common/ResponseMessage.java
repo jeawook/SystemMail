@@ -1,5 +1,6 @@
 package com.SystemMail.common;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.lang3.builder.ToStringBuilder;
@@ -17,9 +18,10 @@ public class ResponseMessage {
     // Error Code
     private String errorCode;
 
-    public ResponseMessage() {}
+    protected ResponseMessage() {}
 
-    public ResponseMessage(String status, String message, String errorCode, String errorMessage) {
+    @Builder
+    protected ResponseMessage(String status, String message, String errorCode, String errorMessage) {
         this.status = status;
         this.message = message;
         this.errorCode = errorCode;

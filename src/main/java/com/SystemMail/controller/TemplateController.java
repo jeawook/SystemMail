@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.net.URI;
+import java.util.Optional;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 
@@ -33,5 +34,5 @@ public class TemplateController {
         return ResponseEntity.created(createUri).body(createdMailTemplate);
 
     }
-
+    
 }

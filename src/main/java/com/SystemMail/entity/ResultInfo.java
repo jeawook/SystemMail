@@ -18,7 +18,7 @@ public class ResultInfo {
     @Column(name = "id")
     private Long id;
 
-    private int total_cnt;
+    private int totalCnt;
 
     private int success;
 
