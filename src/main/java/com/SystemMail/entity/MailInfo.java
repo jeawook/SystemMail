@@ -1,11 +1,13 @@
 package com.SystemMail.entity;
 
+import com.google.common.base.Preconditions;
 import lombok.*;
 
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.google.common.base.Preconditions.*;
 import static javax.persistence.CascadeType.*;
 import static javax.persistence.FetchType.*;
 
@@ -18,6 +20,9 @@ public class MailInfo {
     @Column(name = "id")
     private Long id;
 
+    @Column
+    private String message;
+
     @Embedded
     @AttributeOverride(name = "address", column = @Column(name = "mailFrom"))
     private Email mailFrom;
@@ -27,32 +32,23 @@ public class MailInfo {
     @Embedded
     @AttributeOverride(name = "address", column = @Column(name = "replyTo"))
     private Email replyTo;
-    private String header;
+
 
     @OneToMany(mappedBy = "mailInfo", cascade = ALL, fetch = LAZY)
     private List<SendInfo> sendInfoList = new ArrayList<>();
 
-    @ManyToOne
-    @JoinColumn(name = "template_id")
-    private MailTemplate mailTemplate;
-
     @Builder
-    public MailInfo(Email mailFrom, Email mailTo, Email replyTo, String header, List<SendInfo> sendInfoList, MailTemplate mailTemplate) {
+    public MailInfo(String message, Email mailFrom, Email mailTo, Email replyTo, List<SendInfo> sendInfoList) {
+        checkNotNull(message, "message가 입력되어야 합니다.");
+        this.message = message;
         this.mailFrom = mailFrom;
         this.mailTo = mailTo;
         this.replyTo = replyTo;
-        this.header = header;
         this.sendInfoList = sendInfoList;
-        this.mailTemplate = mailTemplate;
     }
 
     public void addSendInfo(SendInfo sendInfo) {
         sendInfo.setMailInfo(this);
         getSendInfoList().add(sendInfo);
-    }
-
-    public void addMailTemplate(MailTemplate mailTemplate) {
-        mailTemplate.getMailInfoList().add(this);
-        this.mailTemplate = mailTemplate;
     }
 }

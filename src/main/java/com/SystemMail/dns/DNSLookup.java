@@ -25,7 +25,11 @@ public class DNSLookup
             e.printStackTrace();
         }
     }
-
+    /**
+     * 도메인으로 mx 주소 검색
+     * @param host 도메인 정보
+     * @return mx 주소를 반환
+     */
     public String lookup (String host)
     {
         InetAddress inetAddress;
@@ -58,10 +62,5 @@ public class DNSLookup
             e.printStackTrace();
         }
         return null;
-    }
-
-    public static void main(String[] args){
-        DNSLookup looker = new DNSLookup();
-        looker.lookup("gmail.com");
     }
 }

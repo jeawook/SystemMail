@@ -27,17 +27,17 @@ class EmailTest {
         String address = "test.com";
         Throwable throwable = assertThrows(IllegalArgumentException.class,
                 () -> {Email.of(address);});
-        assertThat(throwable.getMessage().equals("Invalid email address:"));
+        assertThat(throwable.getMessage()).isEqualTo("Invalid email address: "+address);
 
         String nullAddress = null;
         throwable = assertThrows(IllegalArgumentException.class,
                 () -> {Email.of(nullAddress);});
-        assertThat(throwable.getMessage().equals("address must be provided"));
+        assertThat(throwable.getMessage()).isEqualTo("address must be provided");
 
         String sizeErrorAddress = "a@d";
         throwable = assertThrows(IllegalArgumentException.class,
                 () -> {Email.of(sizeErrorAddress);});
-        assertThat(throwable.getMessage().equals("address length must be between 4 and 50 characters"));
+        assertThat(throwable.getMessage()).isEqualTo("address length must be between 4 and 50 characters");
 
     }
 

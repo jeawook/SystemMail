@@ -1,7 +1,6 @@
 package com.SystemMail.mailService;
 
-import com.SystemMail.dns.DNSLookup;
-import com.SystemMail.dto.MailDTO;
+import com.SystemMail.dto.MailDto;
 import com.SystemMail.exception.SMTPException;
 
 import java.io.*;
@@ -17,34 +16,13 @@ public class SocketMailSender{
     static private final String serverDomain = "sender.com";
     static private final int PORT = 25;
 
-    public static void main(String[] args) throws Exception{
-        String content = "<html><head><meta name=\"GENERATOR\" content=\"MSHTML 9.00.8112.16737\"></head><body>한글깨짐?\n" +
-                "</body></html>";
-
-
-        MailDTO mailDTO = MailDTO.builder()
-                .mailFrom("pdj13579@nate.com")
-                .mailTo("pdj13579@nate.com")
-                .content(content)
-                .encoding("8bit")
-                .subject("메일 제목")
-                .domain("nate.com")
-                .build();
-        DNSLookup dnsLookup = new DNSLookup();
-        String lookup = dnsLookup.lookup(mailDTO.getDomain());
-        SocketMailSender mail = new SocketMailSender();
-        mail.send(mailDTO,lookup);
-
-    }
-
     /**
      * 메일 발송 정보 입력
      * @param mailDTO 메일 발송 정보
      * @param lookup 수신 서버 정보
      * @throws SMTPException
      */
-
-    public void send(MailDTO mailDTO, String lookup) throws SMTPException{
+    public void send(MailDto mailDTO, String lookup) throws SMTPException{
         connect(lookup);
         hail(mailDTO.getMailFrom(), mailDTO.getMailTo());
         sendMessage(mailDTO);
@@ -53,7 +31,7 @@ public class SocketMailSender{
 
     /**
      * smtp 수신 서버 연결
-     * @param lookup 수신 서버 정보
+     * @param lookup 수신 서버 MX 주소
      * @throws SMTPException
      */
     public void connect(String lookup) throws SMTPException{
@@ -65,7 +43,7 @@ public class SocketMailSender{
             if(serverReply.startsWith("250") || serverReply.startsWith("354")|| serverReply.startsWith("221")){
 
             }else{
-                throw new SMTPException("Error connecting to SMTP server " + lookup+" on port"+PORT);
+                throw new SMTPException("Error connecting to SMTP server " + lookup+" on port "+PORT);
             }
         }catch(Exception e){
             throw new SMTPException(e.getMessage());
@@ -74,11 +52,11 @@ public class SocketMailSender{
     }
 
     public void hail(String from, String to) throws SMTPException{
-        if(submitCommand("HELO " + serverDomain))
+        if(submitCommand(SMTPCommand.HELO + serverDomain))
             throw new SMTPException("Error occured during HELO command.");
-        if(submitCommand("MAIL FROM:"+from))
+        if(submitCommand(SMTPCommand.create(SMTPCommand.MAILFROM,from)))
             throw new SMTPException("Error during MAIL command");
-        if(submitCommand("RCPT TO:"+to))
+        if(submitCommand(SMTPCommand.create(SMTPCommand.RCPTTO,to)))
             throw new SMTPException("Error during RCPT command.");
     }
 
@@ -88,24 +66,22 @@ public class SocketMailSender{
      * @throws SMTPException
      */
 
-    public void sendMessage(MailDTO mailDTO) throws SMTPException{
+    public void sendMessage(MailDto mailDTO) throws SMTPException{
         StringBuilder sb = new StringBuilder();
+        String defaultCharset = "utf-8";
+        String mimeVersion = "1.0";
+        String contentType = "text/html";
         try{
-            if(submitCommand("DATA"))
+            if(submitCommand(SMTPCommand.DATA))
                 throw new SMTPException("Error during DATA command.");
-            String subject = MailHeader.create(MailHeader.HEADER_SUBJECT, MailHeader.encodeHeader(mailDTO.getSubject(),"utf-8"));
-            sb.append(subject);
-            sb.append("From:<").append(mailDTO.getMailFrom()).append(">").append("\r\n");
-            sb.append("To:<").append(mailDTO.getMailTo()).append(">").append("\r\n");
-            sb.append("Reply-To:<").append(mailDTO.getReplyTo()).append(">").append("\r\n");
-            sb.append("Date:").append(LocalDateTime.now()).append("\r\n");
-            sb.append("Mime-Version: 1.0;").append("\r\n");
-            sb.append("Content-Type: text/html; charset=\"utf-8\";").append("\r\n");
-            sb.append("Content-Transfer-Encoding :").append(mailDTO.getEncoding()).append("\r\n");
-
-
-
-            sb.append("\r\n");
+            sb.append(MailHeader.create(MailHeader.HEADER_SUBJECT, MailHeader.encodeHeader(mailDTO.getSubject(),defaultCharset)));
+            sb.append(MailHeader.create(MailHeader.HEADER_FROM,MailHeader.encodeHeader(mailDTO.getMailFrom(),defaultCharset)));
+            sb.append(MailHeader.create(MailHeader.HEADER_TO,MailHeader.encodeHeader(mailDTO.getMailTo(),defaultCharset)));
+            sb.append(MailHeader.create(MailHeader.HEADER_REPLY_TO,MailHeader.encodeHeader(mailDTO.getReplyTo(),defaultCharset)));
+            sb.append(MailHeader.create(MailHeader.HEADER_DATE,MailHeader.encodeHeader(LocalDateTime.now().toString(), defaultCharset)));
+            sb.append(MailHeader.create(MailHeader.HEADER_MIME_VERSION,MailHeader.encodeHeader(mimeVersion,defaultCharset)));
+            sb.append(MailHeader.create(MailHeader.HEADER_CONTENT_TYPE,MailHeader.encodeHeader(contentType, defaultCharset)));
+            sb.append(MailHeader.create(MailHeader.HEADER_CONTENT_TRANSFER_ENCODING,MailHeader.encodeHeader(mailDTO.getEncoding(),defaultCharset)));
             if(submitCommand(sb.toString()+mailDTO.getContent()+"\r\n."))
                 throw new SMTPException("Error during mail transmission.");
 
@@ -115,7 +91,7 @@ public class SocketMailSender{
 
     /**
      * smtp 명령어 실행
-     * @param command
+     * @param command HELO, MAIL FROM, REPLY TO,
      * @return
      * @throws SMTPException
      */

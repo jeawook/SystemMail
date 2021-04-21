@@ -1,6 +1,9 @@
 package com.SystemMail.entity;
 
 
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
@@ -73,13 +76,6 @@ public class Email {
     @Override
     public int hashCode() {
         return Objects.hash(address);
-    }
-
-    @Override
-    public String toString() {
-        return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
-                .append("address", address)
-                .toString();
     }
 
 }

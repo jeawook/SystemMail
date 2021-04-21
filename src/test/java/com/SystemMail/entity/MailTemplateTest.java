@@ -16,7 +16,7 @@ class MailTemplateTest {
                 .user("관리자 id")
                 .build();
         assertThat(mailTemplate.getContent()).isEqualTo("메일 본문");
-        assertThat(mailTemplate.getSubject()).isEqualTo("메일 본문");
+        assertThat(mailTemplate.getSubject()).isEqualTo("메일 제목");
         assertThat(mailTemplate.getMessage()).isEqualTo("템플릿 설명");
         assertThat(mailTemplate.getUser()).isEqualTo("관리자 id");
     }

@@ -21,4 +21,6 @@ public class BaseControllerTest {
     protected MockMvc mockMvc;
     @Autowired
     protected ModelMapper modelMapper;
+    @Autowired
+    protected ObjectMapper objectMapper;
 }

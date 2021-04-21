@@ -1,6 +1,7 @@
 package com.SystemMail.entity;
 
 import lombok.*;
+import net.minidev.json.annotate.JsonIgnore;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
@@ -29,9 +30,6 @@ public class MailTemplate extends BaseTimeEntity {
 
     private String message;
 
-    @OneToMany(mappedBy = "mailTemplate")
-    private List<MailInfo> mailInfoList = new ArrayList<>();
-
     @Builder
     public MailTemplate(String content, String user, String subject, String message) {
         checkNotNull(content, "본문이 입력되어야 합니다.");
@@ -41,16 +39,5 @@ public class MailTemplate extends BaseTimeEntity {
         this.user = user;
         this.subject = subject;
         this.message = message;
-    }
-
-    @Override
-    public String toString() {
-        return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
-                .append("id", id)
-                .append("content", content)
-                .append("user", user)
-                .append("subject", subject)
-                .append("message", message)
-                .toString();
     }
 }

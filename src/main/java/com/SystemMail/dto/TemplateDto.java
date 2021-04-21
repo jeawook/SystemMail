@@ -1,26 +1,22 @@
 package com.SystemMail.dto;
 
-import lombok.Builder;
-import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
+import javax.validation.constraints.NotNull;
+
 @Data
 @Builder
-@Getter
-@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class TemplateDto {
+    @NotNull
+    private String user;
+    @NotNull
     private String content;
+    @NotNull
     private String subject;
+    @NotNull
     private String message;
-    @Override
-    public String toString() {
-        return new ToStringBuilder(this, ToStringStyle.JSON_STYLE)
-                .append("content", content)
-                .append("subject", subject)
-                .append("message", message)
-                .toString();
-    }
 }
