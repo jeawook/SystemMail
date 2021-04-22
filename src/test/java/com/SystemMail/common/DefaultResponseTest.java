@@ -18,7 +18,7 @@ class DefaultResponseTest {
     @Test
     public void createDefaultResponseErrorTest() {
 
-        Throwable throwable = assertThrows(NullPointerException.class,() ->{DefaultResponse.builder().build();});
+        Throwable throwable = assertThrows(IllegalArgumentException.class,() ->{DefaultResponse.builder().build();});
         assertThat(throwable.getMessage()).isEqualTo("상태 코드가 입력 되어야 합니다.");
 
     }

@@ -19,10 +19,12 @@ class MailInfoTest {
                 .mailFrom(mailFrom)
                 .mailTo(mailTo)
                 .replyTo(replyTo)
+                .message("발송메시지")
                 .build();
-        assertThat(mailInfo.getMailFrom().equals(mailFrom));
-        assertThat(mailInfo.getMailTo().equals(mailTo));
-        assertThat(mailInfo.getReplyTo().equals(replyTo));
+        assertThat(mailInfo.getMailFrom()).isEqualTo(mailFrom);
+        assertThat(mailInfo.getMailTo()).isEqualTo(mailTo);
+        assertThat(mailInfo.getReplyTo()).isEqualTo(replyTo);
+        assertThat(mailInfo.getMessage()).isEqualTo("발송메시지");
     }
 
     

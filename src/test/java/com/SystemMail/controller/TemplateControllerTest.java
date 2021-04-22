@@ -32,12 +32,13 @@ class TemplateControllerTest extends BaseControllerTest {
         TemplateDto templateDto = TemplateDto.builder()
                 .subject("메일 제목")
                 .content("메일 본문")
+                .user("user")
                 .message("템플릿 내용")
                 .build();
         mockMvc.perform(post("/api/template")
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaTypes.HAL_JSON)
-                .content(templateDto.toString()))
+                .content(this.objectMapper.writeValueAsString(templateDto)))
         .andDo(print())
         .andExpect(status().isCreated())
         .andExpect(jsonPath("status").value(ResponseCode.OK))
@@ -59,7 +60,7 @@ class TemplateControllerTest extends BaseControllerTest {
                 .subject("메일 제목")
                 .build();
         MailTemplate createdMailTemplate = templateRepository.save(mailTemplate);
-        mockMvc.perform(get("/api/template")
+        mockMvc.perform(get("/api/template/{id}", createdMailTemplate.getId())
                 .contentType(MediaType.APPLICATION_JSON))
         .andDo(print())
         .andExpect(status().isOk())
