@@ -1,6 +1,5 @@
 package com.SystemMail.entity;
 
-import com.sun.mail.iap.Argument;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -12,17 +11,17 @@ public class Macro {
 
     private String macro;
 
-    private String values;
+    private String macreData;
 
 
     @Builder
-    public Macro(String macro, String values) {
+    public Macro(String macro, String macreData) {
         int macroSize = macro.split(",").length;
-        int valuesSize = values.split(",").length;
+        int valuesSize = macreData.split(",").length;
         if (macroSize != valuesSize) {
             throw new IllegalArgumentException("입력된 매크로 데이터가 일치 하지 않습니다.");
         }
         this.macro = macro;
-        this.values = values;
+        this.macreData = macreData;
     }
 }

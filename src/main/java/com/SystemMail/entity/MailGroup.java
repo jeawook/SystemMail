@@ -1,18 +1,15 @@
 package com.SystemMail.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import com.google.common.base.Preconditions;
+import lombok.*;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 
+import static com.google.common.base.Preconditions.*;
+import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 @Entity
-@Builder
 @Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class MailGroup {
@@ -23,10 +20,19 @@ public class MailGroup {
 
     private String name;
 
-    private String email;
+    @Embedded
+    @AttributeOverride(name = "address", column = @Column(name = "email"))
+    @AttributeOverride(name = "name", column = @Column(name = "emailName"))
+    private Email email;
 
-    private String qry;
+    private Macro macro;
 
-
-
+    @Builder
+    public MailGroup(String name, Email email, Macro macro) {
+        checkArgument(isNotEmpty(name), "이름이 입력되어야 합니다.");
+        checkNotNull(email, "이메일주소가 입력되어야 합니다.");
+        this.name = name;
+        this.email = email;
+        this.macro = macro;
+    }
 }

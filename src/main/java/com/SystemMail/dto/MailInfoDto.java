@@ -2,6 +2,7 @@ package com.SystemMail.dto;
 
 import com.SystemMail.entity.Email;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -11,6 +12,7 @@ import javax.persistence.Embedded;
 import javax.validation.constraints.NotNull;
 
 @Data
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class MailInfoDto {
@@ -18,9 +20,9 @@ public class MailInfoDto {
     @NotNull
     private String message;
     @NotNull
-    private String mailFrom;
+    private Email mailFrom;
     @NotNull
-    private String mailTo;
+    private Email mailTo;
     @NotNull
-    private String replyTo;
+    private Email replyTo;
 }

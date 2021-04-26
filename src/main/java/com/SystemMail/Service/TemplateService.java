@@ -1,14 +1,13 @@
 package com.SystemMail.Service;
 
 import com.SystemMail.entity.MailTemplate;
-import com.SystemMail.repository.TemplateRepository;
+import com.SystemMail.repository.MailTemplateRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -16,7 +15,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class TemplateService {
 
-    private final TemplateRepository templateRepository;
+    private final MailTemplateRepository templateRepository;
 
     @Transactional
     public MailTemplate saveMailTemplate(MailTemplate mailTemplate) {
@@ -27,7 +26,7 @@ public class TemplateService {
         return templateRepository.findAll(pageable);
     }
 
-    public Optional<MailTemplate> findOne(Long id) {
+    public Optional<MailTemplate> findMailTemplateById(Long id) {
         return templateRepository.findById(id);
     }
 

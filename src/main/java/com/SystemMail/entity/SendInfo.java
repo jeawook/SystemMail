@@ -1,12 +1,15 @@
 package com.SystemMail.entity;
 
+import com.google.common.base.Preconditions;
 import lombok.*;
+import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.google.common.base.Preconditions.*;
 import static javax.persistence.CascadeType.*;
 import static javax.persistence.FetchType.*;
 
@@ -20,13 +23,16 @@ public class SendInfo {
     @Column(name = "id")
     private Long id;
 
+    @Enumerated(value = EnumType.STRING)
     private SendStatus sendStatus;
 
     private LocalDateTime sendDate;
 
     private LocalDateTime completeDate;
 
-    @ManyToOne
+    private Macro macro;
+
+    @OneToOne
     @JoinColumn(name = "group_id")
     private MailGroup group;
 
@@ -46,7 +52,13 @@ public class SendInfo {
     private List<ResultDetail> resultDetails = new ArrayList<>();
 
     @Builder
-    public SendInfo(LocalDateTime sendDate, MailGroup group, MailTemplate mailTemplate, MailInfo mailInfo) {
+    public SendInfo(LocalDateTime sendDate, MailGroup group, MailTemplate mailTemplate, MailInfo mailInfo, Macro macro) {
+        checkNotNull(group, "그룹정보가 입력 되지 않았습니다.");
+        checkNotNull(mailTemplate, "템플릿 정보가 입력 되지 않았습니다.");
+        checkNotNull(mailInfo, "발송자 정보가 입력되지 않았습니다.");
+        if (sendDate == null) {
+            sendDate = LocalDateTime.now();
+        }
         this.sendDate = sendDate;
         this.group = group;
         this.mailTemplate = mailTemplate;

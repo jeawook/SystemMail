@@ -22,12 +22,12 @@ public class SocketMailSender{
      * @param lookup 수신 서버 정보
      * @throws SMTPException
      */
-    public void send(MailDto mailDTO, String lookup) throws SMTPException{
+/*    public void send(MailDto mailDTO, String lookup) throws SMTPException{
         connect(lookup);
         hail(mailDTO.getMailFrom(), mailDTO.getMailTo());
         sendMessage(mailDTO);
         quit();
-    }
+    }*/
 
     /**
      * smtp 수신 서버 연결
@@ -72,7 +72,7 @@ public class SocketMailSender{
         String mimeVersion = "1.0";
         String contentType = "text/html";
         try{
-            if(submitCommand(SMTPCommand.DATA))
+           /* if(submitCommand(SMTPCommand.DATA))
                 throw new SMTPException("Error during DATA command.");
             sb.append(MailHeader.create(MailHeader.HEADER_SUBJECT, MailHeader.encodeHeader(mailDTO.getSubject(),defaultCharset)));
             sb.append(MailHeader.create(MailHeader.HEADER_FROM,MailHeader.encodeHeader(mailDTO.getMailFrom(),defaultCharset)));
@@ -83,7 +83,7 @@ public class SocketMailSender{
             sb.append(MailHeader.create(MailHeader.HEADER_CONTENT_TYPE,MailHeader.encodeHeader(contentType, defaultCharset)));
             sb.append(MailHeader.create(MailHeader.HEADER_CONTENT_TRANSFER_ENCODING,MailHeader.encodeHeader(mailDTO.getEncoding(),defaultCharset)));
             if(submitCommand(sb.toString()+mailDTO.getContent()+"\r\n."))
-                throw new SMTPException("Error during mail transmission.");
+                throw new SMTPException("Error during mail transmission.");*/
 
         }catch(Exception e){
         }

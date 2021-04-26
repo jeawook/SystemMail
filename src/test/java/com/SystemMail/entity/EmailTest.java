@@ -1,6 +1,5 @@
 package com.SystemMail.entity;
 
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -13,12 +12,12 @@ class EmailTest {
     @DisplayName("email 생성 성공 테스트")
     public void createEmailTest() {
         String address = "test@test.com";
-        Email email = Email.of(address);
+        String name = "이름";
+        Email email = Email.of(address, name);
 
-        assertThat(email.equals(address));
-        assertThat(email.getDomain().equals("test.com"));
-        assertThat(email.getName().equals("test"));
-        assertThat(email.getAddress().equals(address));
+        assertThat(email.getDomain()).isEqualTo("test.com");
+        assertThat(email.getId()).isEqualTo("test");
+        assertThat(email.getAddress()).isEqualTo(address);
     }
 
     @Test
@@ -26,17 +25,17 @@ class EmailTest {
     public void createEmailErrorTest() {
         String address = "test.com";
         Throwable throwable = assertThrows(IllegalArgumentException.class,
-                () -> {Email.of(address);});
+                () -> {Email.of(address, "");});
         assertThat(throwable.getMessage()).isEqualTo("Invalid email address: "+address);
 
         String nullAddress = null;
         throwable = assertThrows(IllegalArgumentException.class,
-                () -> {Email.of(nullAddress);});
+                () -> {Email.of(nullAddress, "");});
         assertThat(throwable.getMessage()).isEqualTo("address must be provided");
 
         String sizeErrorAddress = "a@d";
         throwable = assertThrows(IllegalArgumentException.class,
-                () -> {Email.of(sizeErrorAddress);});
+                () -> {Email.of(sizeErrorAddress, "");});
         assertThat(throwable.getMessage()).isEqualTo("address length must be between 4 and 50 characters");
 
     }

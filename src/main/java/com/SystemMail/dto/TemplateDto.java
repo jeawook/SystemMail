@@ -19,4 +19,5 @@ public class TemplateDto {
     private String subject;
     @NotNull
     private String message;
+
 }

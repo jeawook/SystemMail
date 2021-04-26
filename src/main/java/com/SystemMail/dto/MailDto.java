@@ -1,34 +1,32 @@
 package com.SystemMail.dto;
 
+import com.SystemMail.entity.Email;
+import com.SystemMail.entity.Macro;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import javax.validation.constraints.NotNull;
+import java.time.LocalDateTime;
 
 @Data
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class MailDto {
 
-    private Long mailId;
+    @NotNull
+    private Long mailInfoId;
+    @NotNull
+    private Long templateId;
 
-    private String domain;
+    private String name;
+    @NotNull
+    private Email email;
+    @NotNull
+    private LocalDateTime sendDate;
 
-    private String mailFrom;
-
-    private String mailFromName;
-
-    private String mailTo;
-
-    private String mailToName;
-
-    private String returnPath;
-
-    private String replyTo;
-
-    private String encoding;
-
-    private String subject;
-
-    private String content;
-
-
+    private Macro macro;
 
 }

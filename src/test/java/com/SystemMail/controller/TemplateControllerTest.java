@@ -4,7 +4,7 @@ import com.SystemMail.common.BaseControllerTest;
 import com.SystemMail.common.ResponseCode;
 import com.SystemMail.dto.TemplateDto;
 import com.SystemMail.entity.MailTemplate;
-import com.SystemMail.repository.TemplateRepository;
+import com.SystemMail.repository.MailTemplateRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +23,7 @@ class TemplateControllerTest extends BaseControllerTest {
 
 
     @Autowired
-    TemplateRepository templateRepository;
+    MailTemplateRepository templateRepository;
 
     static final String URL = "/api/template";
     @Test
