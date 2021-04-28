@@ -1,4 +1,4 @@
-package com.SystemMail.domain;
+package com.SystemMail.domain.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

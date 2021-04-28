@@ -1,4 +1,4 @@
-package com.SystemMail.domain;
+package com.SystemMail.domain.entity;
 
 public enum SendStatus {
     READY, SENDING, COMPLETE, ERROR
