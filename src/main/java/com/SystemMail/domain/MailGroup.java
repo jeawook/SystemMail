@@ -1,6 +1,5 @@
-package com.SystemMail.entity;
+package com.SystemMail.domain;
 
-import com.google.common.base.Preconditions;
 import lombok.*;
 
 import javax.persistence.*;
@@ -25,14 +24,11 @@ public class MailGroup {
     @AttributeOverride(name = "name", column = @Column(name = "emailName"))
     private Email email;
 
-    private Macro macro;
-
     @Builder
-    public MailGroup(String name, Email email, Macro macro) {
+    public MailGroup(String name, Email email) {
         checkArgument(isNotEmpty(name), "이름이 입력되어야 합니다.");
         checkNotNull(email, "이메일주소가 입력되어야 합니다.");
         this.name = name;
         this.email = email;
-        this.macro = macro;
     }
 }

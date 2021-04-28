@@ -1,4 +1,4 @@
-package com.SystemMail.entity;
+package com.SystemMail.domain;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

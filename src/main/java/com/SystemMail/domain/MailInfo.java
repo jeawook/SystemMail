@@ -1,18 +1,11 @@
-package com.SystemMail.entity;
+package com.SystemMail.domain;
 
-import com.google.common.base.Preconditions;
 import lombok.*;
-import net.minidev.json.annotate.JsonIgnore;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
 
 import static com.google.common.base.Preconditions.*;
 import static com.google.common.base.Preconditions.checkArgument;
-import static javax.persistence.CascadeType.*;
-import static javax.persistence.FetchType.*;
-import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 
 @Entity
 @Getter

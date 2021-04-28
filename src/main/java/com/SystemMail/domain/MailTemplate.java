@@ -1,13 +1,8 @@
-package com.SystemMail.entity;
+package com.SystemMail.domain;
 
 import lombok.*;
-import net.minidev.json.annotate.JsonIgnore;
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
