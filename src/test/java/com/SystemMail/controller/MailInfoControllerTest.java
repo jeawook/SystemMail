@@ -4,12 +4,11 @@ import com.SystemMail.Service.MailInfoService;
 import com.SystemMail.common.BaseControllerTest;
 import com.SystemMail.common.ResponseCode;
 import com.SystemMail.dto.MailInfoDto;
-import com.SystemMail.entity.Email;
-import com.SystemMail.entity.MailInfo;
+import com.SystemMail.domain.entity.Email;
+import com.SystemMail.domain.entity.MailInfo;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;

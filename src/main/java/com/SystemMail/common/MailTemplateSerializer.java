@@ -1,6 +1,6 @@
 package com.SystemMail.common;
 
-import com.SystemMail.entity.MailTemplate;
+import com.SystemMail.domain.entity.MailTemplate;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;

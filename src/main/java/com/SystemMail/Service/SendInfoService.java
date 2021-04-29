@@ -1,6 +1,6 @@
 package com.SystemMail.Service;
 
-import com.SystemMail.entity.SendInfo;
+import com.SystemMail.domain.entity.SendInfo;
 import com.SystemMail.repository.SendInfoRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

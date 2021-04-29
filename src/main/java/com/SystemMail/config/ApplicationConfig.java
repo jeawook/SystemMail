@@ -1,5 +1,6 @@
 package com.SystemMail.config;
 
+import com.SystemMail.mailService.MailHeaderEncoder;
 import com.SystemMail.mailService.SocketMailSender;
 import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;

@@ -6,21 +6,20 @@ import com.SystemMail.Service.SendInfoService;
 import com.SystemMail.Service.TemplateService;
 import com.SystemMail.common.DefaultResponse;
 import com.SystemMail.common.ResponseCode;
-import com.SystemMail.dto.MailDto;
-import com.SystemMail.entity.MailGroup;
-import com.SystemMail.entity.MailInfo;
-import com.SystemMail.entity.MailTemplate;
-import com.SystemMail.entity.SendInfo;
-import com.SystemMail.repository.MailGroupRepository;
+import com.SystemMail.dto.SendInfoDto;
+import com.SystemMail.domain.entity.MailGroup;
+import com.SystemMail.domain.entity.MailInfo;
+import com.SystemMail.domain.entity.MailTemplate;
+import com.SystemMail.domain.entity.SendInfo;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
-import org.hibernate.procedure.spi.ParameterRegistrationImplementor;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.HashMap;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -39,7 +38,7 @@ public class SendInfoController {
     private final ModelMapper modelMapper;
 
     @PostMapping
-    public ResponseEntity createSendInfo(@RequestBody @Valid MailDto mailDto, Errors errors) {
+    public ResponseEntity createSendInfo(@RequestBody @Valid SendInfoDto mailDto, Errors errors) {
 
         if (errors.hasErrors()) {
             return ResponseEntity.badRequest().body(DefaultResponse.builder().status(ResponseCode.AUTHENTICATION_ERROR).errorMessage(Objects.requireNonNull(errors.getFieldError()).getDefaultMessage()));
@@ -51,13 +50,14 @@ public class SendInfoController {
         }
         MailGroup mailGroup = modelMapper.map(mailDto, MailGroup.class);
         MailGroup saveMailGroup = mailGroupService.createMailGroup(mailGroup);
+        HashMap<String, String> macro = new HashMap<>();
         SendInfo sendInfo = SendInfo.builder()
                 .mailInfo(mailInfoById.get())
                 .mailTemplate(mailTemplateById.get())
                 .sendDate(mailDto.getSendDate())
-                .group(saveMailGroup)
-                .macro(mailDto.getMacro())
+                .mailGroup(saveMailGroup)
                 .build();
+        sendInfo.setMacro(mailDto.getMacroValues().split(","), mailDto.getMacroData().split(","));
         SendInfo createSendInfo = sendInfoService.createSendInfo(sendInfo);
 
         return ResponseEntity.created(linkTo(SendInfoController.class).slash(createSendInfo.getId()).toUri())
@@ -73,7 +73,6 @@ public class SendInfoController {
         }
         return ResponseEntity.ok(DefaultResponse.builder().status(ResponseCode.OK).data(sendInfo.get()).build());
     }
-
 
 
 }

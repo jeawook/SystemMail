@@ -1,5 +1,6 @@
 package com.SystemMail.domain;
 
+import com.SystemMail.domain.entity.Email;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

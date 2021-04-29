@@ -1,5 +1,6 @@
 package com.SystemMail.domain;
 
+import com.SystemMail.domain.entity.MailTemplate;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;

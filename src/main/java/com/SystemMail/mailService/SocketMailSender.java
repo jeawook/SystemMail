@@ -1,11 +1,11 @@
 package com.SystemMail.mailService;
 
-import com.SystemMail.dto.MailDto;
+import com.SystemMail.domain.entity.Email;
+import com.SystemMail.domain.entity.SendInfo;
 import com.SystemMail.exception.SMTPException;
 
 import java.io.*;
 import java.net.*;
-import java.time.LocalDateTime;
 
 public class SocketMailSender{
 
@@ -18,16 +18,16 @@ public class SocketMailSender{
 
     /**
      * 메일 발송 정보 입력
-     * @param mailDTO 메일 발송 정보
+     * @param SendInfo 메일 발송 정보
      * @param lookup 수신 서버 정보
      * @throws SMTPException
      */
-/*    public void send(MailDto mailDTO, String lookup) throws SMTPException{
+    public void send(SendInfo sendInfo, String lookup) throws SMTPException{
         connect(lookup);
-        hail(mailDTO.getMailFrom(), mailDTO.getMailTo());
-        sendMessage(mailDTO);
+        hail(sendInfo.getMailInfo().getMailFrom(), sendInfo.getMailInfo().getMailTo());
+        sendMessage(sendInfo);
         quit();
-    }*/
+    }
 
     /**
      * smtp 수신 서버 연결
@@ -51,22 +51,22 @@ public class SocketMailSender{
 
     }
 
-    public void hail(String from, String to) throws SMTPException{
+    public void hail(Email mailFrom, Email mailTo) throws SMTPException{
         if(submitCommand(SMTPCommand.HELO + serverDomain))
             throw new SMTPException("Error occured during HELO command.");
-        if(submitCommand(SMTPCommand.create(SMTPCommand.MAILFROM,from)))
+        if(submitCommand(SMTPCommand.create(SMTPCommand.MAILFROM,mailFrom.getAddress())))
             throw new SMTPException("Error during MAIL command");
-        if(submitCommand(SMTPCommand.create(SMTPCommand.RCPTTO,to)))
+        if(submitCommand(SMTPCommand.create(SMTPCommand.RCPTTO,mailTo.getAddress())))
             throw new SMTPException("Error during RCPT command.");
     }
 
     /**
      * 메일 발송
-     * @param mailDTO
+     * @param SendInfo
      * @throws SMTPException
      */
 
-    public void sendMessage(MailDto mailDTO) throws SMTPException{
+    public void sendMessage(SendInfo sendInfo) throws SMTPException{
         StringBuilder sb = new StringBuilder();
         String defaultCharset = "utf-8";
         String mimeVersion = "1.0";

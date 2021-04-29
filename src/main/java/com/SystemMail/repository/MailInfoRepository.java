@@ -1,6 +1,6 @@
 package com.SystemMail.repository;
 
-import com.SystemMail.entity.MailInfo;
+import com.SystemMail.domain.entity.MailInfo;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

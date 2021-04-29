@@ -1,24 +1,21 @@
 package com.SystemMail.controller;
 
-import com.SystemMail.Service.SendInfoService;
 import com.SystemMail.common.BaseControllerTest;
 import com.SystemMail.common.ResponseCode;
-import com.SystemMail.dto.MailDto;
-import com.SystemMail.entity.Email;
-import com.SystemMail.entity.MailInfo;
-import com.SystemMail.entity.MailTemplate;
+import com.SystemMail.dto.SendInfoDto;
+import com.SystemMail.domain.entity.Email;
+import com.SystemMail.domain.entity.MailInfo;
+import com.SystemMail.domain.entity.MailTemplate;
 import com.SystemMail.repository.MailInfoRepository;
 import com.SystemMail.repository.MailTemplateRepository;
 import com.SystemMail.repository.SendInfoRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 import java.time.LocalDateTime;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -57,7 +54,7 @@ class SendInfoControllerTest extends BaseControllerTest {
         MailTemplate saveMailTemplate = mailTemplateRepository.save(mailTemplate);
         MailInfo saveMailInfo = mailInfoRepository.save(mailInfo);
         Email email = Email.of("test@test.com", "test");
-        MailDto mailDto = MailDto.builder()
+        SendInfoDto mailDto = SendInfoDto.builder()
                 .mailInfoId(saveMailInfo.getId())
                 .templateId(saveMailTemplate.getId())
                 .email(email)

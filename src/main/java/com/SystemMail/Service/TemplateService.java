@@ -1,6 +1,6 @@
 package com.SystemMail.Service;
 
-import com.SystemMail.entity.MailTemplate;
+import com.SystemMail.domain.entity.MailTemplate;
 import com.SystemMail.repository.MailTemplateRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;

@@ -1,5 +1,6 @@
 package com.SystemMail.domain;
 
+import com.SystemMail.domain.entity.*;
 import org.junit.jupiter.api.Test;
 
 public class SendInfoTest {

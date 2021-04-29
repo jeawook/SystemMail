@@ -1,6 +1,6 @@
 package com.SystemMail.Service;
 
-import com.SystemMail.entity.MailGroup;
+import com.SystemMail.domain.entity.MailGroup;
 import com.SystemMail.repository.MailGroupRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

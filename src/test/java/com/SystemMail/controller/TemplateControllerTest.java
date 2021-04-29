@@ -3,7 +3,7 @@ package com.SystemMail.controller;
 import com.SystemMail.common.BaseControllerTest;
 import com.SystemMail.common.ResponseCode;
 import com.SystemMail.dto.TemplateDto;
-import com.SystemMail.entity.MailTemplate;
+import com.SystemMail.domain.entity.MailTemplate;
 import com.SystemMail.repository.MailTemplateRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

@@ -1,32 +1,21 @@
 package com.SystemMail.dto;
 
-import com.SystemMail.entity.Email;
-import com.SystemMail.entity.Macro;
-import lombok.AllArgsConstructor;
+import com.SystemMail.domain.entity.Email;
 import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
-import javax.validation.constraints.NotNull;
-import java.time.LocalDateTime;
+import java.util.HashMap;
 
 @Data
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
 public class MailDto {
 
-    @NotNull
-    private Long mailInfoId;
-    @NotNull
-    private Long templateId;
+    private HeaderDto headerDto;
 
-    private String name;
-    @NotNull
     private Email email;
-    @NotNull
-    private LocalDateTime sendDate;
 
-    private Macro macro;
+    private String content;
+
+    private HashMap<String, String> macro = new HashMap<>();
+
 
 }

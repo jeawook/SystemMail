@@ -1,7 +1,7 @@
 package com.SystemMail.reousrce;
 
 import com.SystemMail.controller.TemplateController;
-import com.SystemMail.entity.MailTemplate;
+import com.SystemMail.domain.entity.MailTemplate;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.Link;
 

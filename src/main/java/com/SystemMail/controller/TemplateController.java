@@ -4,7 +4,7 @@ import com.SystemMail.Service.TemplateService;
 import com.SystemMail.common.DefaultResponse;
 import com.SystemMail.common.ResponseCode;
 import com.SystemMail.dto.TemplateDto;
-import com.SystemMail.entity.MailTemplate;
+import com.SystemMail.domain.entity.MailTemplate;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
