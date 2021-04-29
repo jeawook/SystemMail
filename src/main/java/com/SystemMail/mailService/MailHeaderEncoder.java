@@ -1,12 +1,15 @@
 package com.SystemMail.mailService;
 
 
+import org.springframework.stereotype.Component;
+
 import java.io.UnsupportedEncodingException;
 import java.util.Base64;
 
 import static java.util.Base64.*;
 
-public class MailHeader {
+
+public class MailHeaderEncoder {
     public static final String CRLF = "\r\n";
 
     public static final String HEADER_RETURN_PATH = "Return-Path";
