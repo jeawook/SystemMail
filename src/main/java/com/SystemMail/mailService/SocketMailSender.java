@@ -1,12 +1,19 @@
 package com.SystemMail.mailService;
 
+import com.SystemMail.config.MailProperties;
 import com.SystemMail.domain.entity.Email;
-import com.SystemMail.domain.entity.SendInfo;
+import com.SystemMail.dto.MailDto;
 import com.SystemMail.exception.SMTPException;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 
-import java.io.*;
-import java.net.*;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.io.PrintStream;
+import java.net.Socket;
+import java.time.LocalDateTime;
 
+@RequiredArgsConstructor
 public class SocketMailSender{
 
     private Socket smtp;
@@ -16,16 +23,16 @@ public class SocketMailSender{
     static private final String serverDomain = "sender.com";
     static private final int PORT = 25;
 
+
     /**
      * 메일 발송 정보 입력
-     * @param SendInfo 메일 발송 정보
-     * @param lookup 수신 서버 정보
+     * @param mailDto 메일 발송 정보
      * @throws SMTPException
      */
-    public void send(SendInfo sendInfo, String lookup) throws SMTPException{
-        connect(lookup);
-        hail(sendInfo.getMailInfo().getMailFrom(), sendInfo.getMailInfo().getMailTo());
-        sendMessage(sendInfo);
+    public void send(MailDto mailDto) throws SMTPException{
+        connect(mailDto.getEmail().getDomain());
+        hail(mailDto.getHeaderDto().getMailTo(), mailDto.getHeaderDto().getMailFrom());
+        sendMessage(mailDto);
         quit();
     }
 
@@ -62,36 +69,25 @@ public class SocketMailSender{
 
     /**
      * 메일 발송
-     * @param SendInfo
+     * @param mailDto
      * @throws SMTPException
      */
 
-    public void sendMessage(SendInfo sendInfo) throws SMTPException{
+    public void sendMessage(MailDto mailDto) throws SMTPException{
         StringBuilder sb = new StringBuilder();
-        String defaultCharset = "utf-8";
-        String mimeVersion = "1.0";
-        String contentType = "text/html";
         try{
-           /* if(submitCommand(SMTPCommand.DATA))
+            if(submitCommand(SMTPCommand.DATA))
                 throw new SMTPException("Error during DATA command.");
-            sb.append(MailHeader.create(MailHeader.HEADER_SUBJECT, MailHeader.encodeHeader(mailDTO.getSubject(),defaultCharset)));
-            sb.append(MailHeader.create(MailHeader.HEADER_FROM,MailHeader.encodeHeader(mailDTO.getMailFrom(),defaultCharset)));
-            sb.append(MailHeader.create(MailHeader.HEADER_TO,MailHeader.encodeHeader(mailDTO.getMailTo(),defaultCharset)));
-            sb.append(MailHeader.create(MailHeader.HEADER_REPLY_TO,MailHeader.encodeHeader(mailDTO.getReplyTo(),defaultCharset)));
-            sb.append(MailHeader.create(MailHeader.HEADER_DATE,MailHeader.encodeHeader(LocalDateTime.now().toString(), defaultCharset)));
-            sb.append(MailHeader.create(MailHeader.HEADER_MIME_VERSION,MailHeader.encodeHeader(mimeVersion,defaultCharset)));
-            sb.append(MailHeader.create(MailHeader.HEADER_CONTENT_TYPE,MailHeader.encodeHeader(contentType, defaultCharset)));
-            sb.append(MailHeader.create(MailHeader.HEADER_CONTENT_TRANSFER_ENCODING,MailHeader.encodeHeader(mailDTO.getEncoding(),defaultCharset)));
-            if(submitCommand(sb.toString()+mailDTO.getContent()+"\r\n."))
-                throw new SMTPException("Error during mail transmission.");*/
-
+                sb.append(mailDto.getHeaderDto().getHeaderInfo());
+            if(submitCommand(sb.toString()+mailDto.getContent()+"\r\n."))
+                throw new SMTPException("Error during mail transmission.");
         }catch(Exception e){
         }
     }
 
     /**
      * smtp 명령어 실행
-     * @param command HELO, MAIL FROM, REPLY TO,
+     * @param command HELO, MAIL FROM, REPLY TO
      * @return
      * @throws SMTPException
      */

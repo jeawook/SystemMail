@@ -1,8 +1,11 @@
 package com.SystemMail.dto;
 
 import com.SystemMail.domain.entity.Email;
+import com.SystemMail.mailService.MailHeaderEncoder;
 import lombok.Builder;
 import lombok.Data;
+
+import java.time.LocalDateTime;
 
 @Data
 @Builder
@@ -24,4 +27,12 @@ public class HeaderDto {
     private String defaultCharset;
 
     private String DKIM;
+
+    public String getHeaderInfo() {
+        return MailHeaderEncoder.create(MailHeaderEncoder.HEADER_SUBJECT, MailHeaderEncoder.encodeHeader(subject, defaultCharset)) +
+                MailHeaderEncoder.create(MailHeaderEncoder.HEADER_FROM, MailHeaderEncoder.encodeHeader(mailFrom.toString(), defaultCharset)) +
+                MailHeaderEncoder.create(MailHeaderEncoder.HEADER_TO, MailHeaderEncoder.encodeHeader(mailTo.toString(), defaultCharset)) +
+                MailHeaderEncoder.create(MailHeaderEncoder.HEADER_REPLY_TO, MailHeaderEncoder.encodeHeader(replyTo.toString(), defaultCharset)) +
+                MailHeaderEncoder.create(MailHeaderEncoder.HEADER_DATE, MailHeaderEncoder.encodeHeader(LocalDateTime.now().toString(), defaultCharset));
+    }
 }

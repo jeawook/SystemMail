@@ -57,7 +57,9 @@ public class SendInfoController {
                 .sendDate(mailDto.getSendDate())
                 .mailGroup(saveMailGroup)
                 .build();
-        sendInfo.setMacro(mailDto.getMacroValues().split(","), mailDto.getMacroData().split(","));
+        if (mailDto.getMacroData() != null && mailDto.getMacroValues() != null) {
+            sendInfo.setMacro(mailDto.getMacroValues().split(","), mailDto.getMacroData().split(","));
+        }
         SendInfo createSendInfo = sendInfoService.createSendInfo(sendInfo);
 
         return ResponseEntity.created(linkTo(SendInfoController.class).slash(createSendInfo.getId()).toUri())

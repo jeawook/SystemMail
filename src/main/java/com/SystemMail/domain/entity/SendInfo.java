@@ -7,6 +7,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static com.google.common.base.Preconditions.*;
 import static javax.persistence.CascadeType.*;
@@ -32,11 +33,11 @@ public class SendInfo {
     @ElementCollection
     @CollectionTable(
             name = "send_info_macro",
-            joinColumns = @JoinColumn(name = "send_info_id")
+            joinColumns = @JoinColumn(name = "id")
     )
-    @MapKeyColumn(name = "macro")
+    @MapKeyColumn(name = "macroValue")
     @Column(name = "macroData")
-    private HashMap<String, String> macro = new HashMap<>();
+    private Map<String, String> macro = new HashMap<>();
 
     @OneToOne
     @JoinColumn(name = "group_id")
@@ -58,7 +59,7 @@ public class SendInfo {
     private List<ResultDetail> resultDetails = new ArrayList<>();
 
     @Builder
-    public SendInfo(LocalDateTime sendDate, MailGroup mailGroup, MailTemplate mailTemplate, MailInfo mailInfo) {
+    public SendInfo(LocalDateTime sendDate, MailGroup mailGroup, MailTemplate mailTemplate, MailInfo mailInfo, String[] macroValue, String[] macroData) {
         checkNotNull(mailGroup, "그룹정보가 입력 되지 않았습니다.");
         checkNotNull(mailTemplate, "템플릿 정보가 입력 되지 않았습니다.");
         checkNotNull(mailInfo, "발송자 정보가 입력되지 않았습니다.");
