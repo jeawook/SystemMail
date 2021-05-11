@@ -26,3 +26,10 @@ mail:
   encoding: BASE64
   returnPath: jwpark@infomail.co.kr
   mimeVersion: 1.0
+domain:
+  domainConnectionInfo:
+    naver.com: 10
+    nate.com: 10
+    daum.net: 6
+    default: 15
+
