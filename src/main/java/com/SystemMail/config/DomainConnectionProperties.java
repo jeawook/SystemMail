@@ -10,10 +10,10 @@ import java.util.HashMap;
 @Component
 @ConfigurationProperties(prefix = "domain")
 @Getter
-public class DomainMaxConnectionInfo {
+public class DomainConnectionProperties {
     private HashMap<String, Integer> domainConnectionInfo = new HashMap<>();
 
-    private void putDomain(String domain, int connection) {
+    private void addDomain(String domain, int connection) {
         domainConnectionInfo.put(domain,connection);
     }
 }

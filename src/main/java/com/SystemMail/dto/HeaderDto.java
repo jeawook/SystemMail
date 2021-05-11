@@ -1,7 +1,7 @@
 package com.SystemMail.dto;
 
 import com.SystemMail.domain.entity.Email;
-import com.SystemMail.mailService.MailHeaderEncoder;
+import com.SystemMail.mail.MailHeaderEncoder;
 import lombok.Builder;
 import lombok.Data;
 

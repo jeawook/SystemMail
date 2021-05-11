@@ -1,18 +1,17 @@
-package com.SystemMail.mailService;
+package com.SystemMail.mail;
 
-import com.SystemMail.config.MailProperties;
 import com.SystemMail.domain.entity.Email;
 import com.SystemMail.dto.MailDto;
 import com.SystemMail.exception.SMTPException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.net.Socket;
-import java.time.LocalDateTime;
 
+@Component
 @RequiredArgsConstructor
 public class SocketMailSender{
 

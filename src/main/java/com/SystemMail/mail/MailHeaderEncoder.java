@@ -1,7 +1,5 @@
-package com.SystemMail.mailService;
+package com.SystemMail.mail;
 
-
-import org.springframework.stereotype.Component;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Base64;

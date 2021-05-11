@@ -1,4 +1,4 @@
-package com.SystemMail.mailService;
+package com.SystemMail.mail;
 
 public class SMTPCommand {
 
