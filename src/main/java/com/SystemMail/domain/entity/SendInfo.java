@@ -24,7 +24,7 @@ public class SendInfo {
     private Long id;
 
     @Enumerated(value = EnumType.STRING)
-    private SendStatus sendStatus;
+    private SendStatus sendStatus = SendStatus.READY;
 
     private LocalDateTime sendDate;
 
@@ -95,5 +95,9 @@ public class SendInfo {
             content = content.replaceAll("\\[\\$" + key + "\\$\\]", macro.get(key));
         }
         return content;
+    }
+
+    public void setSendStatus(SendStatus sendStatus) {
+        this.sendStatus = sendStatus;
     }
 }

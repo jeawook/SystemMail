@@ -47,7 +47,7 @@ public class MailProcesser {
                 sendInfo.setSendStatus(SendStatus.SENDING);
                 try {
                     socketMailSender.send(mailDto);
-                }catch (SMTPException e) {
+                } catch (SMTPException e) {
 
                 }
 

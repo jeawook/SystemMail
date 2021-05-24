@@ -1,5 +1,6 @@
 package com.SystemMail.config;
 
+import com.SystemMail.mail.ConnectionInfo;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -12,8 +13,4 @@ import java.util.HashMap;
 @Getter
 public class DomainConnectionProperties {
     private HashMap<String, Integer> domainConnectionInfo = new HashMap<>();
-
-    private void addDomain(String domain, int connection) {
-        domainConnectionInfo.put(domain,connection);
-    }
 }

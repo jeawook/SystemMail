@@ -4,6 +4,7 @@ import com.SystemMail.domain.entity.Email;
 import com.SystemMail.dto.MailDto;
 import com.SystemMail.exception.SMTPException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 import java.io.BufferedReader;
@@ -12,7 +13,6 @@ import java.io.PrintStream;
 import java.net.Socket;
 
 @Component
-@RequiredArgsConstructor
 public class SocketMailSender{
 
     private Socket smtp;
@@ -28,6 +28,7 @@ public class SocketMailSender{
      * @param mailDto 메일 발송 정보
      * @throws SMTPException
      */
+    @Async
     public void send(MailDto mailDto) throws SMTPException{
         connect(mailDto.getEmail().getDomain());
         hail(mailDto.getHeaderDto().getMailTo(), mailDto.getHeaderDto().getMailFrom());
@@ -40,7 +41,7 @@ public class SocketMailSender{
      * @param lookup 수신 서버 MX 주소
      * @throws SMTPException
      */
-    public void connect(String lookup) throws SMTPException{
+    private void connect(String lookup) throws SMTPException{
         try{
             smtp = new Socket(lookup, PORT);
             input = new BufferedReader(new InputStreamReader(smtp.getInputStream()));
@@ -57,7 +58,7 @@ public class SocketMailSender{
 
     }
 
-    public void hail(Email mailFrom, Email mailTo) throws SMTPException{
+    private void hail(Email mailFrom, Email mailTo) throws SMTPException{
         if(submitCommand(SMTPCommand.HELO + serverDomain))
             throw new SMTPException("Error occured during HELO command.");
         if(submitCommand(SMTPCommand.create(SMTPCommand.MAILFROM,mailFrom.getAddress())))
@@ -72,7 +73,7 @@ public class SocketMailSender{
      * @throws SMTPException
      */
 
-    public void sendMessage(MailDto mailDto) throws SMTPException{
+    private void sendMessage(MailDto mailDto) throws SMTPException{
         StringBuilder sb = new StringBuilder();
         try{
             if(submitCommand(SMTPCommand.DATA))
@@ -106,7 +107,7 @@ public class SocketMailSender{
      * smtp 통신 종료
      * @throws SMTPException
      */
-    public void quit() throws SMTPException {
+    private void quit() throws SMTPException {
         try{
             if(submitCommand("Quit"))
                 throw new SMTPException("Error during QUIT command");
