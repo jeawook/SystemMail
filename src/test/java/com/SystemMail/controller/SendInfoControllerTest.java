@@ -10,6 +10,7 @@ import com.SystemMail.repository.MailInfoRepository;
 import com.SystemMail.repository.MailTemplateRepository;
 import com.SystemMail.repository.SendInfoRepository;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -33,6 +34,7 @@ class SendInfoControllerTest extends BaseControllerTest {
     @BeforeEach
 
     @Test
+    @DisplayName("sendInfo 생성 테스트")
     public void createSendInfo() throws Exception{
         MailTemplate mailTemplate = MailTemplate.builder()
                 .message("테스트메일")

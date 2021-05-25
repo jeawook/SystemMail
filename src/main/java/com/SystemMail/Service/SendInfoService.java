@@ -16,7 +16,7 @@ public class SendInfoService {
 
     private final SendInfoRepository sendInfoRepository;
 
-    public SendInfo createSendInfo(SendInfo sendInfo) {
+    public SendInfo saveSendInfo(SendInfo sendInfo) {
         return sendInfoRepository.save(sendInfo);
     }
 

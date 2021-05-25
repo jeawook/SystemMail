@@ -60,7 +60,7 @@ public class SendInfoController {
         if (mailDto.getMacroData() != null && mailDto.getMacroValues() != null) {
             sendInfo.setMacro(mailDto.getMacroValues().split(","), mailDto.getMacroData().split(","));
         }
-        SendInfo createSendInfo = sendInfoService.createSendInfo(sendInfo);
+        SendInfo createSendInfo = sendInfoService.saveSendInfo(sendInfo);
 
         return ResponseEntity.created(linkTo(SendInfoController.class).slash(createSendInfo.getId()).toUri())
                 .body(DefaultResponse.builder().status(ResponseCode.CREATED).data(createSendInfo).build());

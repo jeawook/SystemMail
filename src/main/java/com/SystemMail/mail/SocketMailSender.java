@@ -1,6 +1,8 @@
 package com.SystemMail.mail;
 
+import com.SystemMail.Service.SendInfoService;
 import com.SystemMail.domain.entity.Email;
+import com.SystemMail.domain.entity.SendInfo;
 import com.SystemMail.dto.MailDto;
 import com.SystemMail.exception.SMTPException;
 import lombok.RequiredArgsConstructor;
@@ -13,6 +15,7 @@ import java.io.PrintStream;
 import java.net.Socket;
 
 @Component
+@RequiredArgsConstructor
 public class SocketMailSender{
 
     private Socket smtp;
@@ -21,6 +24,7 @@ public class SocketMailSender{
     private String serverReply;
     static private final String serverDomain = "sender.com";
     static private final int PORT = 25;
+    private final SendInfoService sendInfoService;
 
 
     /**
@@ -28,12 +32,15 @@ public class SocketMailSender{
      * @param mailDto 메일 발송 정보
      * @throws SMTPException
      */
-    @Async
+    //@Async("threadPoolTaskExecutor")
     public void send(MailDto mailDto) throws SMTPException{
         connect(mailDto.getEmail().getDomain());
         hail(mailDto.getHeaderDto().getMailTo(), mailDto.getHeaderDto().getMailFrom());
         sendMessage(mailDto);
         quit();
+        SendInfo sendInfo = mailDto.getSendInfo();
+        sendInfo.setComplete();
+        sendInfoService.saveSendInfo(sendInfo);
     }
 
     /**
@@ -44,6 +51,7 @@ public class SocketMailSender{
     private void connect(String lookup) throws SMTPException{
         try{
             smtp = new Socket(lookup, PORT);
+            smtp.setSoTimeout(1000);
             input = new BufferedReader(new InputStreamReader(smtp.getInputStream()));
             output = new PrintStream(smtp.getOutputStream());
             serverReply = input.readLine();
@@ -115,6 +123,8 @@ public class SocketMailSender{
             output.flush();
             output.close();
             smtp.close();
-        }catch(Exception e){}
+        }catch(Exception e){
+            throw new SMTPException("Error during QUIT command");
+        }
     }
 }

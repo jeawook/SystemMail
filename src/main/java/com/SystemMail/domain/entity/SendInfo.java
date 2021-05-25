@@ -97,7 +97,21 @@ public class SendInfo {
         return content;
     }
 
-    public void setSendStatus(SendStatus sendStatus) {
-        this.sendStatus = sendStatus;
+    public void sending() {
+        if (this.getSendStatus() == SendStatus.SENDING || this.getSendStatus() == SendStatus.COMPLETE) {
+
+        }
+        this.sendStatus = SendStatus.SENDING;
     }
+
+    public void error() {
+        this.sendStatus = SendStatus.ERROR;
+    }
+
+    public void setComplete() {
+        this.sendStatus = SendStatus.COMPLETE;
+        this.completeDate = LocalDateTime.now();
+    }
+
+
 }

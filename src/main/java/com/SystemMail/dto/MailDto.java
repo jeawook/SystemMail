@@ -1,6 +1,7 @@
 package com.SystemMail.dto;
 
 import com.SystemMail.domain.entity.Email;
+import com.SystemMail.domain.entity.SendInfo;
 import lombok.Builder;
 import lombok.Data;
 
@@ -15,10 +16,14 @@ public class MailDto {
     @NotNull
     private HeaderDto headerDto;
 
+
     @NotNull
     private Email email;
 
     @NotNull
     private String content;
+
+    @NotNull
+    private SendInfo sendInfo;
 
 }

@@ -1,6 +1,7 @@
 package com.SystemMail.domain;
 
 import com.SystemMail.domain.entity.MailTemplate;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -8,6 +9,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 class MailTemplateTest {
 
     @Test
+    @DisplayName("템플릿 생성 테스트")
     public void createMailTemplate() {
         MailTemplate mailTemplate = MailTemplate.builder()
                 .content("메일 본문")
