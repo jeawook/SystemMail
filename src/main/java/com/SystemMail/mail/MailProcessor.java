@@ -8,6 +8,7 @@ import com.SystemMail.domain.entity.SendStatus;
 import com.SystemMail.dto.HeaderDto;
 import com.SystemMail.dto.MailDto;
 import com.SystemMail.exception.SMTPException;
+import com.SystemMail.repository.SendInfoRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -17,8 +18,9 @@ import java.util.List;
 
 @Component
 @RequiredArgsConstructor
-public class MailProcesser {
+public class MailProcessor {
 
+    private final SendInfoService sendInfoService;
     private final MailProperties mailProperties;
     private final SocketMailSender socketMailSender;
     private final DomainConnectionProperties domainConnProperties;
@@ -43,12 +45,16 @@ public class MailProcesser {
                         .headerDto(headerDto)
                         .email(sendInfo.getMailGroup().getEmail())
                         .content(sendInfo.makeContent())
+                        .sendInfo(sendInfo)
                         .build();
-                sendInfo.setSendStatus(SendStatus.SENDING);
+
                 try {
+                    sendInfo.sending();
+                    sendInfoService.saveSendInfo(sendInfo);
                     socketMailSender.send(mailDto);
                 } catch (SMTPException e) {
-
+                    sendInfo.error();
+                    sendInfoService.saveSendInfo(sendInfo);
                 }
 
             }
