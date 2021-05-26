@@ -10,7 +10,7 @@ import javax.persistence.*;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ResultDetail {
+public class MailResultDetail {
 
     @Id @GeneratedValue
     @Column(name = "id")
