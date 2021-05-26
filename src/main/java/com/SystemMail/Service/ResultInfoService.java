@@ -1,6 +1,6 @@
 package com.SystemMail.Service;
 
-import com.SystemMail.domain.entity.ResultInfo;
+import com.SystemMail.domain.entity.MailResultInfo;
 import com.SystemMail.repository.ResultInfoRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -13,8 +13,8 @@ public class ResultInfoService {
     private final ResultInfoRepository resultInfoRepository;
 
     @Transactional
-    public ResultInfo saveResultInfo(ResultInfo resultInfo) {
-        return resultInfoRepository.save(resultInfo);
+    public MailResultInfo saveResultInfo(MailResultInfo mailResultInfo) {
+        return resultInfoRepository.save(mailResultInfo);
     }
 
 }

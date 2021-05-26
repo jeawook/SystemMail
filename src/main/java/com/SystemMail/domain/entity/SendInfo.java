@@ -53,10 +53,10 @@ public class SendInfo {
 
     @OneToOne
     @JoinColumn(name = "result_info_id")
-    private ResultInfo resultInfo;
+    private MailResultInfo mailResultInfo;
 
     @OneToMany(mappedBy = "sendInfo", fetch = LAZY, cascade = ALL)
-    private List<ResultDetail> resultDetails = new ArrayList<>();
+    private List<MailResultDetail> mailResultDetails = new ArrayList<>();
 
     @Builder
     public SendInfo(LocalDateTime sendDate, MailGroup mailGroup, MailTemplate mailTemplate, MailInfo mailInfo, String[] macroValue, String[] macroData) {
@@ -72,9 +72,9 @@ public class SendInfo {
         this.mailInfo = mailInfo;
     }
 
-    public void addResultDetail(ResultDetail resultDetail) {
-        getResultDetails().add(resultDetail);
-        resultDetail.setSendInfo(this);
+    public void addResultDetail(MailResultDetail mailResultDetail) {
+        getMailResultDetails().add(mailResultDetail);
+        mailResultDetail.setSendInfo(this);
     }
 
     public void setMailInfo(MailInfo mailInfo) {
