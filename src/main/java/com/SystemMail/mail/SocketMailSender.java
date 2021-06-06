@@ -2,7 +2,6 @@ package com.SystemMail.mail;
 
 import com.SystemMail.Service.MailResultDetailService;
 import com.SystemMail.Service.MailResultInfoService;
-import com.SystemMail.Service.SendInfoService;
 import com.SystemMail.common.SmtpCode;
 import com.SystemMail.dns.DNSLookup;
 import com.SystemMail.domain.entity.*;
@@ -11,7 +10,6 @@ import com.SystemMail.exception.SMTPException;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 import java.io.BufferedReader;
@@ -19,8 +17,6 @@ import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.net.ConnectException;
 import java.net.Socket;
-import java.net.SocketTimeoutException;
-import java.util.List;
 
 @Component
 @RequiredArgsConstructor
@@ -52,9 +48,18 @@ public class SocketMailSender{
             String lookup = dnsLookup.lookup(sendInfo.getMailGroup().getEmail().getDomain());
             logger.debug("lookup : "+lookup);
             connect(lookup);
-            hail(mailDto.getHeaderDto().getMailTo(), mailDto.getHeaderDto().getMailFrom());
-            sendMessage(mailDto);
-            String quit = quit();
+            String helo = SMTPCommand.create(SMTPCommand.HELO, serverDomain);
+            sendMessage(helo,SmtpCode.GREETING);
+            String mailFrom = SMTPCommand.create(SMTPCommand.MAILFROM, mailDto.getSendInfo().getMailInfo().getMailFrom().getAddress());
+            sendMessage(mailFrom,SmtpCode.SUCCESS);
+            String rcptTo = SMTPCommand.create(SMTPCommand.RCPTTO, mailDto.getSendInfo().getMailGroup().getEmail().getAddress());
+            sendMessage(rcptTo,SmtpCode.SUCCESS);
+            String data = SMTPCommand.create(SMTPCommand.DATA, mailDto.getData());
+            sendMessage(data, SmtpCode.SUCCESS);
+
+            sendMessage(SMTPCommand.QUIT, SmtpCode.SERVER_CLOSE);
+            //sendMessage(mailDto);
+            quit();
             resultProcess(sendInfo, quit, ResultStatus.SUCCESS);
         } catch (ConnectException e) {
             resultProcess(sendInfo,"", ResultStatus.SERVER_ERROR);
@@ -83,29 +88,16 @@ public class SocketMailSender{
         }else{
             logger.debug("Error connecting to SMTP server " + lookup+" on port "+PORT);
         }
-
-
     }
 
-    private String hail(Email mailFrom, Email mailTo) throws SMTPException{
-        String heloCommand = submitCommand(SMTPCommand.HELO + serverDomain).trim();
-        logger.debug("heloCommand : "+heloCommand);
-        if(heloCommand.startsWith(SmtpCode.SUCCESS)) {
+
+    private String sendMessage(String message, String returnCode) throws SMTPException{
+        String resultMessage = submitCommand(message);
+        if(resultMessage.startsWith(returnCode)) {
             logger.debug(" error :  " + serverDomain);
-            throw new SMTPException("Error occured during HELO command." + heloCommand);
+            throw new SMTPException("command Exception" + resultMessage);
         }
-        /*String mailFromCommand = submitCommand(SMTPCommand.create(SMTPCommand.MAILFROM, mailFrom.getAddress()));
-        logger.debug("mailFromCommand : "+mailFromCommand);
-        if(mailFromCommand.startsWith(SmtpCode.SUCCESS)) {
-            logger.debug(" mailFrom error :  " + mailFrom.getAddress());
-            throw new SMTPException("Error during MAIL command : "+mailFromCommand);
-        }
-        String rcptToCommand = submitCommand(SMTPCommand.create(SMTPCommand.RCPTTO, mailTo.getAddress()));
-        logger.debug("rcptToCommand : "+rcptToCommand);
-        if(rcptToCommand.startsWith(SmtpCode.SUCCESS)) {
-            logger.debug(" rcptTo error :  " + mailTo.getAddress());
-            throw new SMTPException("Error during RCPT command.");
-        }*/
+        return resultMessage;
     }
 
     /**
@@ -146,26 +138,15 @@ public class SocketMailSender{
         }
     }
 
-    /**
-     * smtp 통신 종료
-     * @throws SMTPException
-     */
-    private String quit() throws SMTPException {
+    private void quit() throws SMTPException {
         try{
-
-            String quit = submitCommand("Quit");
-            if(quit.startsWith(SmtpCode.SERVER_CLOSE)) {
-                logger.trace("Command : Quit error");
-                throw new SMTPException("Error during QUIT command");
-            }
             input.close();
             output.flush();
             output.close();
             smtp.close();
-            return quit;
         }catch(Exception e){
-            logger.trace("Command : Quit Error :  " + e.getMessage());
-            throw new SMTPException("Error during QUIT command Exception : "+e.getMessage() );
+            logger.trace("close Error :  " + e.getMessage());
+            throw new SMTPException("close Exception : "+e.getMessage() );
         }
     }
 
