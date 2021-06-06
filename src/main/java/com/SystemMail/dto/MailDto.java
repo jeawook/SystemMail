@@ -26,4 +26,8 @@ public class MailDto {
     @NotNull
     private SendInfo sendInfo;
 
+    public String getData() {
+        return headerDto.getHeaderInfo() + content;
+    }
+
 }
