@@ -6,11 +6,8 @@ import com.SystemMail.Service.SendInfoService;
 import com.SystemMail.Service.TemplateService;
 import com.SystemMail.common.DefaultResponse;
 import com.SystemMail.common.ResponseCode;
+import com.SystemMail.domain.entity.*;
 import com.SystemMail.dto.SendInfoDto;
-import com.SystemMail.domain.entity.MailGroup;
-import com.SystemMail.domain.entity.MailInfo;
-import com.SystemMail.domain.entity.MailTemplate;
-import com.SystemMail.domain.entity.SendInfo;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -50,7 +47,8 @@ public class SendInfoController {
         }
         MailGroup mailGroup = modelMapper.map(mailDto, MailGroup.class);
         MailGroup saveMailGroup = mailGroupService.createMailGroup(mailGroup);
-        HashMap<String, String> macro = new HashMap<>();
+        MailResultInfo mailResultInfo = MailResultInfo.builder().build();
+        MailResultDetail mailResultDetail = MailResultDetail.builder().build();
         SendInfo sendInfo = SendInfo.builder()
                 .mailInfo(mailInfoById.get())
                 .mailTemplate(mailTemplateById.get())

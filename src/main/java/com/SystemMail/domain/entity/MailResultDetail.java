@@ -18,7 +18,8 @@ public class MailResultDetail {
 
     private String email;
 
-    private int code;
+    @Enumerated(EnumType.STRING)
+    private ResultStatus resultStatus;
 
     private String message;
 

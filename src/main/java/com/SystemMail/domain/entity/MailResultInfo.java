@@ -8,9 +8,7 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 
 @Entity
-@Builder
 @Getter
-@NoArgsConstructor
 @AllArgsConstructor
 public class MailResultInfo {
 
@@ -28,4 +26,22 @@ public class MailResultInfo {
     @JoinColumn(name = "send_info_id")
     private SendInfo sendInfo;
 
+    @Builder
+    public MailResultInfo() {
+        totalCnt = 1;
+        success = 0;
+        fail = 0;
+    }
+
+    public void setSendInfo(SendInfo sendInfo) {
+        this.sendInfo = sendInfo;
+    }
+
+    public void addSuccess(){
+        success++;
+    }
+
+    public void addFail() {
+        fail++;
+    }
 }

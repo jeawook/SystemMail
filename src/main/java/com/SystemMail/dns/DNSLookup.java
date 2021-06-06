@@ -1,5 +1,7 @@
 package com.SystemMail.dns;
 
+import org.springframework.stereotype.Component;
+
 import javax.naming.directory.Attribute;
 import javax.naming.directory.Attributes;
 import javax.naming.directory.InitialDirContext;
@@ -10,6 +12,7 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Hashtable;
 
+@Component
 public class DNSLookup
 {
     private InitialDirContext iDirC;

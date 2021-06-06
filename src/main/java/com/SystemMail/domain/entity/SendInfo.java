@@ -51,18 +51,19 @@ public class SendInfo {
     @JoinColumn(name = "mail_info_id")
     private MailInfo mailInfo;
 
-    @OneToOne
-    @JoinColumn(name = "result_info_id")
+    @OneToOne(cascade = ALL, fetch = LAZY)
+    @JoinColumn(name = "result_info_id" )
     private MailResultInfo mailResultInfo;
 
-    @OneToMany(mappedBy = "sendInfo", fetch = LAZY, cascade = ALL)
+    @OneToMany(mappedBy = "sendInfo", cascade = ALL, fetch = LAZY)
     private List<MailResultDetail> mailResultDetails = new ArrayList<>();
 
     @Builder
-    public SendInfo(LocalDateTime sendDate, MailGroup mailGroup, MailTemplate mailTemplate, MailInfo mailInfo, String[] macroValue, String[] macroData) {
+    public SendInfo(LocalDateTime sendDate, MailGroup mailGroup, MailTemplate mailTemplate, MailInfo mailInfo) {
         checkNotNull(mailGroup, "그룹정보가 입력 되지 않았습니다.");
         checkNotNull(mailTemplate, "템플릿 정보가 입력 되지 않았습니다.");
         checkNotNull(mailInfo, "발송자 정보가 입력되지 않았습니다.");
+
         if (sendDate == null) {
             sendDate = LocalDateTime.now();
         }
@@ -75,6 +76,10 @@ public class SendInfo {
     public void addResultDetail(MailResultDetail mailResultDetail) {
         getMailResultDetails().add(mailResultDetail);
         mailResultDetail.setSendInfo(this);
+    }
+    public void setMailResultInfo(MailResultInfo mailResultInfo) {
+        this.mailResultInfo = mailResultInfo;
+        mailResultInfo.setSendInfo(this);
     }
 
     public void setMailInfo(MailInfo mailInfo) {
@@ -99,7 +104,7 @@ public class SendInfo {
 
     public void sending() {
         if (this.getSendStatus() == SendStatus.SENDING || this.getSendStatus() == SendStatus.COMPLETE) {
-
+            return;
         }
         this.sendStatus = SendStatus.SENDING;
     }

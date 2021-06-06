@@ -7,11 +7,13 @@ import com.SystemMail.mail.MailProcessor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Component
+@Transactional
 @RequiredArgsConstructor
 public class Scheduler {
 

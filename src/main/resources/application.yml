@@ -17,9 +17,12 @@ spring:
       pageable:
         default-page-size: 10
         max-page-size: 2000
-logging.level:
-  org.hibernate.SQL: debug
-  # org.hibernate.type: trace
+logging:
+  level:
+    root: info
+    org.hibernate.SQL: debug
+    org.hibernate.type: trace
+    com.SystemMail.mail: debug
 
 mail:
   contentType: text/html; charset=utf-8
