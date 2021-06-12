@@ -10,6 +10,7 @@ import com.SystemMail.exception.SMTPException;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 import java.io.BufferedReader;
@@ -25,7 +26,6 @@ public class SocketMailSender{
     private Socket smtp;
     private BufferedReader input;
     private PrintStream output;
-    private String serverReply;
     static private final String serverDomain = "sender.com";
     static private final int PORT = 25;
     private Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -43,6 +43,8 @@ public class SocketMailSender{
      */
     //@Async("threadPoolTaskExecutor")
     public void send(MailDto mailDto){
+        String resultMessage = "";
+        ResultStatus resultStatus = ResultStatus.SUCCESS;
         SendInfo sendInfo = mailDto.getSendInfo();
         try {
             String lookup = dnsLookup.lookup(sendInfo.getMailGroup().getEmail().getDomain());
@@ -57,17 +59,19 @@ public class SocketMailSender{
             String data = SMTPCommand.create(SMTPCommand.DATA, mailDto.getData());
             sendMessage(data, SmtpCode.SUCCESS);
 
-            sendMessage(SMTPCommand.QUIT, SmtpCode.SERVER_CLOSE);
-            //sendMessage(mailDto);
-            quit();
-            resultProcess(sendInfo, quit, ResultStatus.SUCCESS);
+            resultMessage = sendMessage(SMTPCommand.QUIT, SmtpCode.SERVER_CLOSE);
         } catch (ConnectException e) {
-            resultProcess(sendInfo,"", ResultStatus.SERVER_ERROR);
+            resultStatus = ResultStatus.NETWORK_ERROR;
+            resultMessage = e.getMessage();
         } catch (SMTPException e) {
-            resultProcess(sendInfo, e.getMessage(), ResultStatus.NETWORK_ERROR);
+            resultStatus = ResultStatus.SERVER_ERROR;
+            resultMessage = e.getMessage();
         } catch (Exception e) {
-            resultProcess(sendInfo, "", ResultStatus.UNKNOWN_ERROR);
+            resultStatus = ResultStatus.UNDEFINED_ERROR;
+            resultMessage = e.getMessage();
         }
+        resultProcess(sendInfo, resultMessage, resultStatus);
+        quit();
     }
 
     /**
@@ -75,27 +79,41 @@ public class SocketMailSender{
      * @param lookup 수신 서버 MX 주소
      * @throws SMTPException
      */
-    private void connect(String lookup) throws Exception{
+    private void connect(String lookup) throws Exception, SMTPException{
 
         smtp = new Socket(lookup, PORT);
         smtp.setSoTimeout(300);
         input = new BufferedReader(new InputStreamReader(smtp.getInputStream()));
         output = new PrintStream(smtp.getOutputStream());
-        serverReply = input.readLine();
-        System.out.println("server : "+serverReply);
-        if(serverReply.startsWith(SmtpCode.SUCCESS) || serverReply.startsWith(SmtpCode.PROCESS) || serverReply.startsWith(SmtpCode.GREETING)){
-
-        }else{
-            logger.debug("Error connecting to SMTP server " + lookup+" on port "+PORT);
+        String serverReply = input.readLine();
+        String resultCode = getCode(serverReply);
+        if (!resultCode.equals(SmtpCode.GREETING)) {
+            throw new SMTPException(serverReply, resultCode);
         }
+
+    }
+
+    /**
+     * return code 추출 return 메시지의 앞 3자리는 숫자
+     * @param message return message
+     * @return code
+     * @throws SMTPException
+     */
+
+    private String getCode(String message) throws SMTPException{
+        if(message.length() < 3) {
+            throw new SMTPException("Smtp protocol Exception ", SmtpCode.SERVER_ERROR);
+        }
+        return message.substring(0, 3);
     }
 
 
     private String sendMessage(String message, String returnCode) throws SMTPException{
         String resultMessage = submitCommand(message);
-        if(resultMessage.startsWith(returnCode)) {
+        String code = getCode(resultMessage);
+        if(code.equals(returnCode)) {
             logger.debug(" error :  " + serverDomain);
-            throw new SMTPException("command Exception" + resultMessage);
+            throw new SMTPException("Server Error " + resultMessage, code);
         }
         return resultMessage;
     }
@@ -130,15 +148,14 @@ public class SocketMailSender{
     private String submitCommand(String command) throws SMTPException{
         try{
             output.print(command+"\r\n");
-            serverReply = input.readLine();
-            return serverReply;
+            return input.readLine();
         }catch(Exception e){
             logger.trace("Command :" + command+ " Error :  " + e.getMessage());
-            throw new SMTPException(e.getMessage());
+            throw new SMTPException(e.getMessage(), SmtpCode.SERVER_ERROR);
         }
     }
 
-    private void quit() throws SMTPException {
+    private void quit(){
         try{
             input.close();
             output.flush();
@@ -146,7 +163,6 @@ public class SocketMailSender{
             smtp.close();
         }catch(Exception e){
             logger.trace("close Error :  " + e.getMessage());
-            throw new SMTPException("close Exception : "+e.getMessage() );
         }
     }
 

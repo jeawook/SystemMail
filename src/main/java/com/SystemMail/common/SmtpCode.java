@@ -14,4 +14,6 @@ public class SmtpCode {
     public static final String MAIL_BOX_FULL = "552";
     public static final String NO_SUCH_USER = "550";
 
+    public static final String SERVER_ERROR = "530";
+
 }
