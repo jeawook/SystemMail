@@ -10,24 +10,22 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 
 @Data
-@Builder
 public class MailDto {
 
-    @NotNull
     private HeaderDto headerDto;
 
-
-    @NotNull
     private Email email;
 
-    @NotNull
     private String content;
 
-    @NotNull
     private SendInfo sendInfo;
 
-    public String getData() {
-        return headerDto.getHeaderInfo() + content;
+    @Builder
+    public MailDto(@NotNull HeaderDto headerDto, @NotNull Email email, @NotNull String content, @NotNull SendInfo sendInfo) {
+        this.headerDto = headerDto;
+        this.email = email;
+        this.content = content;
+        this.sendInfo = sendInfo;
     }
 
 }
