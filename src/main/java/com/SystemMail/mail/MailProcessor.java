@@ -51,6 +51,7 @@ public class MailProcessor {
                         .replyTo(sendInfo.getMailInfo().getReplyTo())
                         .contentType(mailProperties.getContentType())
                         .encoding(mailProperties.getEncoding())
+                        .subject(sendInfo.getMailTemplate().getSubject())
                         .build();
                 MailDto mailDto = MailDto.builder()
                         .headerDto(headerDto)

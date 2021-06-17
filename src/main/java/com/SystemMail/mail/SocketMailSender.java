@@ -34,8 +34,6 @@ public class SocketMailSender{
     private final MailResultDetailService mailResultDetailService;
     private final DNSLookup dnsLookup;
 
-
-
     /**
      * 메일 발송 정보 입력
      * @param mailDto 메일 발송 정보
@@ -113,6 +111,8 @@ public class SocketMailSender{
         String code = getCode(resultMessage);
         logger.debug("send : "+message);
         logger.debug("return : "+resultMessage);
+        logger.debug("code : "+code);
+        logger.debug("returnCode : "+returnCode);
         if(!code.equals(returnCode)) {
             throw new SMTPException("Server Error " + resultMessage, code);
         }
