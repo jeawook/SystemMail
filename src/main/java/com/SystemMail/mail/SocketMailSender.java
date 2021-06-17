@@ -51,7 +51,7 @@ public class SocketMailSender{
             logger.debug("lookup : "+lookup);
             connect(lookup);
             String helo = SMTPCommand.create(SMTPCommand.HELO, serverDomain);
-            sendMessage(helo,SmtpCode.GREETING);
+            sendMessage(helo,SmtpCode.SUCCESS);
             String mailFrom = SMTPCommand.create(SMTPCommand.MAILFROM, mailDto.getSendInfo().getMailInfo().getMailFrom().getAddress());
             sendMessage(mailFrom,SmtpCode.SUCCESS);
             String rcptTo = SMTPCommand.create(SMTPCommand.RCPTTO, mailDto.getSendInfo().getMailGroup().getEmail().getAddress());
@@ -79,7 +79,7 @@ public class SocketMailSender{
      * @param lookup 수신 서버 MX 주소
      * @throws SMTPException
      */
-    private void connect(String lookup) throws Exception, SMTPException{
+    private void connect(String lookup) throws Exception{
 
         smtp = new Socket(lookup, PORT);
         smtp.setSoTimeout(300);
@@ -111,8 +111,9 @@ public class SocketMailSender{
     private String sendMessage(String message, String returnCode) throws SMTPException{
         String resultMessage = submitCommand(message);
         String code = getCode(resultMessage);
-        if(code.equals(returnCode)) {
-            logger.debug(" error :  " + serverDomain);
+        logger.debug("send : "+message);
+        logger.debug("return : "+resultMessage);
+        if(!code.equals(returnCode)) {
             throw new SMTPException("Server Error " + resultMessage, code);
         }
         return resultMessage;

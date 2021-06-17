@@ -36,9 +36,9 @@ public class MailProcessor {
 
     @Transactional
     public void send(List<SendInfo> sendInfoList) {
-        logger.debug("send : "+sendInfoList.size());
+        logger.debug("send call : "+sendInfoList.size());
         for (SendInfo sendInfo : sendInfoList) {
-
+            logger.debug("mailSend");
             String domain = sendInfo.getMailGroup().getEmail().getDomain();
             int connectionCnt = connectionInfo.getOrDefault(domain, 0);
             int defaultMaxConn = domainConnProperties.getDomainConnectionInfo().getOrDefault("default", maxConn);

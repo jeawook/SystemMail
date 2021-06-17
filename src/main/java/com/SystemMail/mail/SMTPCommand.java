@@ -3,8 +3,8 @@ package com.SystemMail.mail;
 public class SMTPCommand {
 
     public static final String HELO = "HELO ";
-    public static final String MAILFROM = "MAIL FROM:";
-    public static final String RCPTTO = "RCPT TO:";
+    public static final String MAILFROM = "MAIL FROM";
+    public static final String RCPTTO = "RCPT TO";
     public static final String DATA = "DATA";
     public static final String QUIT = "QUIT";
 

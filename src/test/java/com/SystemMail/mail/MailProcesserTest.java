@@ -68,7 +68,9 @@ class MailProcessorTest {
         SendInfo saveSendInfo = sendInfoRepository.save(sendInfo);
         List<SendInfo> sendInfoList = new ArrayList<>();
         sendInfoList.add(saveSendInfo);
+        System.out.println("call");
         mailProcessor.send(sendInfoList);
+
 
     }
 
