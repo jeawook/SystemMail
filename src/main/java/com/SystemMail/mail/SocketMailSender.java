@@ -80,7 +80,7 @@ public class SocketMailSender{
     private void connect(String lookup) throws Exception{
 
         smtp = new Socket(lookup, PORT);
-        smtp.setSoTimeout(300);
+        smtp.setSoTimeout(10000);
         input = new BufferedReader(new InputStreamReader(smtp.getInputStream()));
         output = new PrintStream(smtp.getOutputStream());
         String serverReply = input.readLine();
@@ -113,6 +113,7 @@ public class SocketMailSender{
         logger.debug("return : "+resultMessage);
         logger.debug("code : "+code);
         logger.debug("returnCode : "+returnCode);
+        logger.debug("code.equals(returnCode) : "+code.equals(returnCode));
         if(!code.equals(returnCode)) {
             throw new SMTPException("Server Error " + resultMessage, code);
         }
