@@ -20,6 +20,9 @@ public class MailProperties {
     private String encoding;
 
     @NotNull
+    private String charset;
+
+    @NotNull
     private String returnPath;
 
 }

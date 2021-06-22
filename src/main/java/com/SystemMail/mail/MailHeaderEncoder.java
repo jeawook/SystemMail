@@ -38,6 +38,8 @@ public class MailHeaderEncoder {
 
     public static final String HEADER_X_EMAIL = "X-Email";
 
+    public static final String HEADER_DKIM = "DKIM-Signature";
+
     public static String create(String key, String value) {
         return String.format("%s: %s%s", key, value, "\r\n");
     }

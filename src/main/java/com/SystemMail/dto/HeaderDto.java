@@ -5,8 +5,12 @@ import com.SystemMail.mail.MailHeaderEncoder;
 import lombok.Builder;
 import lombok.Data;
 
-import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
+
+
+import static com.google.common.base.Preconditions.checkArgument;
+import static org.apache.commons.lang3.ObjectUtils.isEmpty;
+import static org.apache.commons.lang3.ObjectUtils.isNotEmpty;
 
 @Data
 public class HeaderDto {
@@ -31,11 +35,11 @@ public class HeaderDto {
 
     @Builder
     public HeaderDto(Email mailFrom, Email mailTo, Email replyTo, String subject, String mimeVersion, String contentType, String encoding, String defaultCharset, String DKIM) {
-        checkArgment(isNotNull(mailFrom), "mailFrom이 입력되어야 합니다.");
-        checkArgment(isNotNull(mailTo), "mailTo가 입력되어야 합니다.");
-        checkArgment(isNotNull(replyTo), "replyTo가 입력되어야 합니다.");
-        checkArgment(isNotNull(subject), "subject가 입력되어야 합니다.");
-        if (defaultCharset == null) {
+        checkArgument(isNotEmpty(mailFrom), "mailFrom이 입력되어야 합니다.");
+        checkArgument(isNotEmpty(mailTo), "mailTo가 입력되어야 합니다.");
+        checkArgument(isNotEmpty(replyTo), "replyTo가 입력되어야 합니다.");
+        checkArgument(isNotEmpty(subject), "subject가 입력되어야 합니다.");
+        if (isEmpty(defaultCharset)) {
             defaultCharset = "UTF-8";
         }
         this.mailFrom = mailFrom;
@@ -52,19 +56,20 @@ public class HeaderDto {
     public String getHeader() {
         StringBuffer sb = new StringBuffer();
         sb.append(makeHeaderInfo(MailHeaderEncoder.HEADER_SUBJECT,subject));
-        sb.append(makeHeaderInfo(MailHeaderEncoder.HEADER_FROM,mailFrom));
-        sb.append(makeHeaderInfo(MailHeaderEncoder.HEADER_REPLY_TO, replyTo));
-        sb.append(makeHeaderInfo(MailHeaderEncoder.HEADER_DATE,LocalDateTime.now()));
-        if(isNotNull(mimeVersion)) {
+        sb.append(makeHeaderInfo(MailHeaderEncoder.HEADER_FROM,mailFrom.toString()));
+        sb.append(makeHeaderInfo(MailHeaderEncoder.HEADER_REPLY_TO, replyTo.toString()));
+        sb.append(makeHeaderInfo(MailHeaderEncoder.HEADER_DATE,LocalDateTime.now().toString()));
+        if(isNotEmpty(mimeVersion)) {
             sb.append(makeHeaderInfo(MailHeaderEncoder.HEADER_MIME_VERSION, mimeVersion));
         }
-        if (isNotNull(DKIM)) {
-            sb.append(makeHeaderInfo(MailHeaderEncoder.Header_))
+        if (isNotEmpty(DKIM)) {
+            sb.append(makeHeaderInfo(MailHeaderEncoder.HEADER_DKIM,DKIM));
         }
+        return sb.toString();
     }
 
 
-    private String makeHeaderInfo(MailHeaderEncoder mailHeaderEncoder,String header) {
+    private String makeHeaderInfo(String mailHeaderEncoder,String header) {
         return MailHeaderEncoder.create(mailHeaderEncoder, MailHeaderEncoder.encodeHeader(header, defaultCharset));
     }
 }

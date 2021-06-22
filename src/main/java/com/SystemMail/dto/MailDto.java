@@ -28,4 +28,8 @@ public class MailDto {
         this.sendInfo = sendInfo;
     }
 
+    public String getData() {
+        return headerDto.getHeader() + content;
+    }
+
 }
